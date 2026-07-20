@@ -1,461 +1,168 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#4f46e5" />
-  <title>Misión Familiar</title>
-  <style>
-    :root{
-      --bg:#f6f7fb;--card:#fff;--ink:#172033;--muted:#667085;--primary:#4f46e5;
-      --primary2:#7c3aed;--success:#16a34a;--warn:#f59e0b;--danger:#dc2626;
-      --line:#e5e7eb;--shadow:0 12px 28px rgba(23,32,51,.09);--radius:20px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#eef2ff 0,#f8fafc 30%,#f6f7fb 100%);color:var(--ink);min-height:100vh}
-    button,input,select,textarea{font:inherit}
-    button{cursor:pointer}
-    .app{max-width:1200px;margin:auto;padding:18px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.2rem}
-    .brand-badge{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:var(--shadow)}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{border:0;border-radius:14px;padding:11px 15px;font-weight:800;background:#eef2ff;color:#3730a3;min-height:44px}
-    .btn:hover{filter:brightness(.98)}
-    .btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:white}
-    .btn.success{background:#dcfce7;color:#166534}
-    .btn.warn{background:#fef3c7;color:#92400e}
-    .btn.danger{background:#fee2e2;color:#991b1b}
-    .btn.ghost{background:white;border:1px solid var(--line);color:var(--ink)}
-    .btn.small{padding:8px 10px;min-height:36px;border-radius:10px;font-size:.9rem}
-    .card{background:var(--card);border:1px solid rgba(229,231,235,.9);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    .grid{display:grid;gap:16px}
-    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-    .hero{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:stretch}
-    .hero-main{padding:28px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:28px;box-shadow:var(--shadow)}
-    .hero-main h1{font-size:clamp(2rem,5vw,4rem);margin:0 0 10px;line-height:1}
-    .hero-main p{font-size:1.1rem;opacity:.92;max-width:700px}
-    .hero-side{display:grid;gap:16px}
-    h1,h2,h3{margin-top:0}
-    .muted{color:var(--muted)}
-    .hidden{display:none!important}
-    .avatar{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;font-size:2rem;background:#eef2ff}
-    .child-picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
-    .child-card{border:2px solid transparent;text-align:center;background:white;border-radius:20px;padding:18px;box-shadow:var(--shadow);transition:.18s}
-    .child-card:hover{transform:translateY(-2px);border-color:#c7d2fe}
-    .child-card .avatar{margin:0 auto 10px}
-    .metric{padding:16px;border-radius:16px;background:#f8fafc;border:1px solid var(--line)}
-    .metric strong{font-size:1.7rem;display:block}
-    .progress{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden}
-    .progress>span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#8b5cf6);border-radius:inherit;transition:width .3s}
-    .ring{--p:0;width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--primary) calc(var(--p)*1%),#e5e7eb 0);position:relative}
-    .ring:before{content:"";position:absolute;inset:14px;background:white;border-radius:50%}
-    .ring strong{position:relative;font-size:2rem}
-    .task-list{display:grid;gap:10px}
-    .task{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:white}
-    .task.done{background:#f0fdf4;border-color:#bbf7d0}
-    .task.pending{background:#fffbeb;border-color:#fde68a}
-    .task-icon{font-size:1.8rem;width:44px;text-align:center}
-    .task-main{flex:1;min-width:0}
-    .task-main strong{display:block}
-    .task-meta{font-size:.85rem;color:var(--muted)}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:800;font-size:.85rem}
-    .award{display:flex;gap:12px;align-items:center;padding:16px;border-radius:18px;background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fed7aa}
-    .award-icon{font-size:2.5rem}
-    .nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-    .nav button.active{background:var(--primary);color:white}
-    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    label{font-weight:700;font-size:.9rem}
-    input,select,textarea{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:11px 12px;background:white}
-    textarea{min-height:90px;resize:vertical}
-    .field{display:grid;gap:6px}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.62);display:grid;place-items:center;padding:16px;z-index:30}
-    .modal{background:white;border-radius:24px;padding:20px;width:min(620px,100%);max-height:90vh;overflow:auto;box-shadow:0 28px 70px rgba(0,0,0,.25)}
-    .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
-    .table-wrap{overflow:auto}
-    table{width:100%;border-collapse:collapse}
-    th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top}
-    th{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-    .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-    .day-cell{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center;min-height:85px}
-    .garden{min-height:170px;border-radius:20px;background:linear-gradient(#dbeafe 0 55%,#dcfce7 55%);padding:18px;display:flex;align-items:end;gap:8px;overflow:hidden}
-    .plant{font-size:2rem;animation:pop .25s ease}
-    .path{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:18px;padding:16px;position:relative}
-    .path:before{content:"";position:absolute;left:7%;right:7%;top:50%;height:6px;background:#dbeafe;border-radius:99px;z-index:0}
-    .path-stop{position:relative;z-index:1;background:white;border:3px solid #c7d2fe;border-radius:50%;width:56px;height:56px;display:grid;place-items:center;font-size:1.6rem}
-    .path-stop.active{border-color:var(--primary);transform:scale(1.08)}
-    .toast{position:fixed;right:20px;bottom:20px;background:#111827;color:white;padding:13px 16px;border-radius:14px;box-shadow:var(--shadow);z-index:60}
-    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:55}
-    .confetti span{position:absolute;top:-20px;font-size:1.3rem;animation:fall 1.6s linear forwards}
-    @keyframes fall{to{transform:translateY(110vh) rotate(600deg)}}
-    @keyframes pop{from{transform:scale(.6);opacity:0}}
-    @media(max-width:850px){.hero,.grid.cols-4,.grid.cols-3,.grid.cols-2,.form-grid{grid-template-columns:1fr}.week-grid{grid-template-columns:repeat(4,1fr)}}
-    @media(max-width:520px){.app{padding:10px}.topbar{align-items:flex-start}.toolbar{justify-content:flex-end}.week-grid{grid-template-columns:repeat(2,1fr)}.hero-main{padding:22px}.task{align-items:flex-start}}
-    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-    @media print{body{background:white}.topbar,.nav,.no-print{display:none!important}.card{box-shadow:none;break-inside:avoid}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4f46e5">
+<title>Aventura Familiar — Tareas y Hábitos</title>
+<style>
+:root{--fondo:#f6f7fb;--tarjeta:#fff;--texto:#172033;--suave:#667085;--primario:#4f46e5;--primario2:#7c3aed;--bien:#16a34a;--aviso:#f59e0b;--peligro:#dc2626;--linea:#e5e7eb;--sombra:0 12px 28px rgba(23,32,51,.09);--radio:20px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#eef2ff 0,#f8fafc 30%,#f6f7fb 100%);color:var(--texto);min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;padding:18px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.marca{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.2rem}.marca-icono{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--primario),var(--primario2));color:#fff;box-shadow:var(--sombra)}
+.herramientas{display:flex;gap:8px;flex-wrap:wrap}.boton{border:0;border-radius:14px;padding:11px 15px;font-weight:800;background:#eef2ff;color:#3730a3;min-height:44px}.boton:hover{filter:brightness(.98)}.boton.primario{background:linear-gradient(135deg,var(--primario),var(--primario2));color:white}.boton.bien{background:#dcfce7;color:#166534}.boton.aviso{background:#fef3c7;color:#92400e}.boton.peligro{background:#fee2e2;color:#991b1b}.boton.neutro{background:white;border:1px solid var(--linea);color:var(--texto)}.boton.peq{padding:8px 10px;min-height:36px;border-radius:10px;font-size:.9rem}
+.tarjeta{background:var(--tarjeta);border:1px solid rgba(229,231,235,.9);border-radius:var(--radio);padding:18px;box-shadow:var(--sombra)}.rejilla{display:grid;gap:16px}.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}.hero-principal{padding:28px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:28px;box-shadow:var(--sombra)}.hero-principal h1{font-size:clamp(2rem,5vw,4rem);margin:0 0 10px;line-height:1}.hero-principal p{font-size:1.1rem;opacity:.92}.hero-lado{display:grid;gap:16px}
+h1,h2,h3{margin-top:0}.suave{color:var(--suave)}.oculto{display:none!important}.avatar{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;font-size:2rem;background:#eef2ff}
+.selector-ninos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}.nino-card{border:2px solid transparent;text-align:center;background:white;border-radius:20px;padding:18px;box-shadow:var(--sombra);transition:.18s}.nino-card:hover{transform:translateY(-2px);border-color:#c7d2fe}.nino-card .avatar{margin:0 auto 10px}
+.metrica{padding:16px;border-radius:16px;background:#eef2ff;border:1px solid #c7d2fe;color:#1e1b4b}.metrica span{color:#312e81;font-weight:800}.metrica strong{font-size:1.7rem;display:block;color:#111827}.panel-nino{color:#111827}.panel-nino h3,.panel-nino div{color:#111827}.panel-nino .etiqueta{color:#312e81}.biblioteca-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}.biblioteca-item{background:#f8fafc;border-radius:16px;padding:16px}.biblioteca-item h3{margin-bottom:6px}.biblioteca-datos{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.selector-dias{display:grid;grid-template-columns:repeat(7,minmax(48px,1fr));gap:7px;grid-column:1/-1}.dia-check{display:flex;align-items:center;justify-content:center;gap:5px;background:#f8fafc;border:1px solid #d0d5dd;border-radius:10px;padding:9px 5px;font-weight:700}.dia-check input{width:auto;margin:0}.matriz-wrap{overflow:auto}.matriz-hogar{border-collapse:separate;border-spacing:6px;width:100%}.matriz-hogar th,.matriz-hogar td{border:0;border-radius:10px;padding:10px;background:#f8fafc;color:#111827}.matriz-hogar th{background:#e0e7ff;color:#312e81}.matriz-hogar td.asignada{background:#dcfce7;color:#14532d;font-weight:800}.progreso{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progreso>span{display:block;height:100%;background:linear-gradient(90deg,var(--primario),#8b5cf6);border-radius:inherit}
+.anillo{--p:0;width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--primario) calc(var(--p)*1%),#e5e7eb 0);position:relative}.anillo:before{content:"";position:absolute;inset:14px;background:white;border-radius:50%}.anillo strong{position:relative;font-size:2rem}
+.lista{display:grid;gap:10px}.tarea{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--linea);border-radius:16px;background:white}.tarea.hecha{background:#f0fdf4;border-color:#bbf7d0}.tarea.pendiente{background:#fffbeb;border-color:#fde68a}.tarea-icono{font-size:1.8rem;width:44px;text-align:center}.tarea-main{flex:1;min-width:0}.tarea-main strong{display:block}.meta{font-size:.85rem;color:var(--suave)}
+.etiqueta{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:800;font-size:.85rem}.premio{display:flex;gap:12px;align-items:center;padding:16px;border-radius:18px;background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fed7aa}.premio-icono{font-size:2.5rem}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.nav button.activo{background:var(--primario);color:white}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-weight:700;font-size:.9rem}input,select,textarea{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:11px 12px;background:white}.campo{display:grid;gap:6px}
+.modal-fondo{position:fixed;inset:0;background:rgba(15,23,42,.62);display:grid;place-items:center;padding:16px;z-index:30}.modal{background:white;border-radius:24px;padding:20px;width:min(620px,100%);max-height:90vh;overflow:auto;box-shadow:0 28px 70px rgba(0,0,0,.25)}.modal-acciones{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
+.tabla{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--linea);vertical-align:top}th{font-size:.82rem;color:var(--suave);text-transform:uppercase}
+.semana{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.dia{background:#f8fafc;border:1px solid var(--linea);border-radius:14px;padding:10px;text-align:center;min-height:85px}.jardin{min-height:170px;border-radius:20px;background:linear-gradient(#dbeafe 0 55%,#dcfce7 55%);padding:18px;display:flex;align-items:end;gap:8px}.planta{font-size:2rem}.camino{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:18px;padding:16px;position:relative}.camino:before{content:"";position:absolute;left:7%;right:7%;top:50%;height:6px;background:#dbeafe}.parada{position:relative;z-index:1;background:white;border:3px solid #c7d2fe;border-radius:50%;width:56px;height:56px;display:grid;place-items:center;font-size:1.6rem}.parada.activa{border-color:var(--primario);transform:scale(1.08)}
+.toast{position:fixed;right:20px;bottom:20px;background:#111827;color:white;padding:13px 16px;border-radius:14px;box-shadow:var(--sombra);z-index:60}.confeti{position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden}.confeti span{position:absolute;top:-20px;animation:caer 1.6s linear forwards}@keyframes caer{to{transform:translateY(110vh) rotate(600deg)}}
+@media(max-width:850px){.hero,.cols4,.cols3,.cols2,.form-grid{grid-template-columns:1fr}.semana{grid-template-columns:repeat(4,1fr)}.selector-dias{grid-template-columns:repeat(4,1fr)}}@media(max-width:520px){.app{padding:10px}.semana{grid-template-columns:repeat(2,1fr)}.hero-principal{padding:22px}.tarea{align-items:flex-start}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}@media print{body{background:white}.topbar,.nav,.no-print{display:none!important}.tarjeta{box-shadow:none;break-inside:avoid}}
+</style>
 </head>
 <body>
-<div class="app">
-  <header class="topbar">
-    <div class="brand"><div class="brand-badge">🏡</div><div>Misión Familiar<br><small style="font-weight:600;color:#667085">Responsabilidades, buenos hábitos y progreso en familia</small></div></div>
-    <div class="toolbar" id="globalToolbar"></div>
-  </header>
-  <main id="app"></main>
-</div>
-<div id="modalRoot"></div>
-<div id="toastRoot"></div>
+<div class="app"><header class="topbar"><div class="marca"><div class="marca-icono">🏡</div><div>Aventura Familiar</div></div><div class="herramientas" id="barra"></div></header><main id="app"></main></div>
+<div id="modalRoot"></div><div id="toastRoot"></div>
 <script>
-(() => {
-  'use strict';
-  const STORAGE_KEY='familyQuest.v1';
-  const DAYS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  const CATS={
-    household:{label:'Tareas del Hogar',icon:'🏠'},
-    personal:{label:'Responsabilidades Personales',icon:'🧼'},
-    practice:{label:'Buenos Hábitos',icon:'🌱'}
-  };
-  const DEFAULT_AWARDS=[
-    {min:100,name:'Campeón Diamante',icon:'💎',message:'¡Esfuerzo perfecto hoy!'},
-    {min:90,name:'Estrella de Oro',icon:'🌟',message:'¡Trabajo increíble!'},
-    {min:80,name:'Estrella de Plata',icon:'⭐',message:'¡Firme y constante!'},
-    {min:70,name:'Estrella de Bronce',icon:'🥉',message:'¡Excelente progreso!'},
-    {min:50,name:'Ayudante en Progreso',icon:'🌱',message:'¡Estás creciendo!'},
-    {min:0,name:'Sigue Creciendo',icon:'💪',message:'¡Cada paso cuenta!'}
-  ];
-  const LIBRARY=[
-    ['Recoger la sala','household','🛋️',1,'fácil'],
-    ['Guardar los juguetes','household','🧸',1,'fácil'],
-    ['Barrer el piso','household','🧹',2,'media'],
-    ['Levantar la mesa','household','🍽️',1,'fácil'],
-    ['Limpiar la mesa','household','🧽',2,'media'],
-    ['Poner los platos en el lavavajillas','household','🍽️',2,'media'],
-    ['Vaciar el lavavajillas','household','🫧',2,'media'],
-    ['Sacar la basura','household','🗑️',3,'difícil'],
-    ['Guardar los zapatos','household','👟',1,'fácil'],
-    ['Doblar las toallas','household','🧺',2,'media'],
-    ['Cepillarse los dientes - mañana','personal','🪥',1,'fácil'],
-    ['Cepillarse los dientes - noche','personal','🪥',1,'fácil'],
-    ['Bañarse o ducharse','personal','🚿',2,'media'],
-    ['Preparar la ropa para mañana','personal','👕',1,'fácil'],
-    ['Tender la cama','personal','🛏️',1,'fácil'],
-    ['Preparar la mochila escolar','personal','🎒',1,'fácil'],
-    ['Hacer ejercicio o jugar activamente','practice','🏃',2,'media'],
-    ['Leer durante 20 minutos','practice','📚',2,'media'],
-    ['Oración diaria','practice','🙏',1,'fácil'],
-    ['Leer las Escrituras','practice','📖',1,'fácil'],
-    ['Compartir algo por lo que estás agradecido','practice','💛',1,'fácil'],
-    ['Ayudar a un familiar','practice','🤝',2,'media']
-  ];
-  let state=load();
-  let session={role:null,childId:null,parentDesbloquearedAt:null,view:'home'};
-  let inactivityHorar=null;
-
-  function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
-  function today(){return new Date().toISOString().slice(0,10)}
-  function weekStart(date=new Date()){
-    const d=new Date(date); const start=state.settings.weekStartsOn==='monday'?1:0;
-    const diff=(d.getDay()-start+7)%7; d.setDate(d.getDate()-diff); d.setHours(0,0,0,0); return d.toISOString().slice(0,10);
-  }
-  function dateAgregar(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
-  function escapeHtml(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-  async function hash(text){const bytes=new TextEncoder().encode(text);const buf=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('')}
-  function defaults(){
-    return {
-      schemaVersion:1,
-      settings:{familyNombre:'Nuestra Familia',weekStartsOn:'sunday',animations:true,showPuntos:true,showStreaks:true,theme:'classic',parentHash:'',createdAt:new Date().toISOString()},
-      children:[],
-      responsibilities:LIBRARY.map(([name,category,icon,weight,difficulty])=>({id:uid(),name,category,icon,weight,difficulty,instructions:'',active:true,verification:false,character:characterFor(category)})),
-      assignments:[],
-      completions:{},
-      awards:DEFAULT_AWARDS,
-      overrides:[],
-      archives:[],
-      rewards:[
-        {id:uid(),name:'Elegir la película familiar',cost:40,icon:'🎬'},
-        {id:uid(),name:'Elegir el postre',cost:30,icon:'🍨'},
-        {id:uid(),name:'Acostarse 15 minutos más tarde',cost:50,icon:'🌙'}
-      ],
-      redemptions:[],
-      familyGoal:{target:90,reward:'Noche de película familiar'},
-      demo:false
-    };
-  }
-  function characterFor(cat){return cat==='household'?'Trabajo en equipo':cat==='personal'?'Responsabilidad':'Crecimiento'}
-  function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||defaults()}catch{return defaults()}}
-  function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-  function setSession(role,childId=null){session={role,childId,parentDesbloquearedAt:role==='parent'?Date.now():null,view:role==='parent'?'parent-dashboard':role==='child'?'child-today':'home'}; render(); resetInactivity()}
-  function resetInactivity(){clearHoraout(inactivityHorar);if(session.role==='parent'){inactivityHorar=setHoraout(()=>{toast('El modo de padres ha sido bloqueado');setSession(null)},10*60*1000)}}
-  ['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>session.role==='parent'&&resetInactivity(),{passive:true}));
-
-  function statusLabel(s){
-    return ({incomplete:'Pendiente',complete:'Completada',pending:'Esperando aprobación',
-      approved:'Aprobada',excused:'Exenta',na:'No aplica'})[s]||s;
-  }
-
-  function compKey(childId,date,assignmentId){return `${childId}|${date}|${assignmentId}`}
-  function getStatus(childId,date,assignmentId){return state.completions[compKey(childId,date,assignmentId)]||{status:'incomplete'}}
-  function setStatus(childId,date,assignmentId,status,note=''){
-    const key=compKey(childId,date,assignmentId);
-    state.completions[key]={status,updatedAt:new Date().toISOString(),note}; save();
-  }
-  function activeAssignments(childId,date){
-    const dow=new Date(date+'T12:00:00').getDay();
-    return state.assignments.filter(a=>a.childId===childId&&a.active!==false&&a.weekStart===weekStart(new Date(date+'T12:00:00'))&&(a.days||[]).includes(dow))
-      .map(a=>({...a,resp:state.responsibilities.find(r=>r.id===a.responsibilityId)})).filter(x=>x.resp&&x.resp.active!==false);
-  }
-  function percent(childId,date){
-    const list=activeAssignments(childId,date);
-    let den=0,num=0;
-    list.forEach(a=>{const s=getStatus(childId,date,a.id).status;const w=a.weight||a.resp.weight||1;if(['excused','na'].includes(s))return;den+=w;if(['complete','approved'].includes(s))num+=w});
-    return den?Math.round(num/den*100):0;
-  }
-  function weeklyPercent(childId,ws=weekStart()){
-    let den=0,num=0;
-    for(let i=0;i<7;i++){const d=dateAgregar(ws,i);const list=activeAssignments(childId,d);list.forEach(a=>{const s=getStatus(childId,d,a.id).status;const w=a.weight||a.resp.weight||1;if(['excused','na'].includes(s))return;den+=w;if(['complete','approved'].includes(s))num+=w})}
-    return den?Math.round(num/den*100):0;
-  }
-  function awardFor(p){return [...state.awards].sort((a,b)=>b.min-a.min).find(a=>p>=a.min)||state.awards[state.awards.length-1]}
-  function childPuntos(childId){
-    let pts=0;Object.entries(state.completions).forEach(([k,v])=>{if(k.startsWith(childId+'|')&&['complete','approved'].includes(v.status)){const aid=k.split('|')[2];const a=state.assignments.find(x=>x.id===aid);pts+=a?.weight||1}});return pts-state.redemptions.filter(r=>r.childId===childId).reduce((s,r)=>s+r.cost,0)
-  }
-  function toast(msg){const el=document.createElement('div');el.classNombre='toast';el.textContent=msg;document.getElementById('toastRoot').appendHijo(el);setHoraout(()=>el.remove(),2400)}
-  function celebrate(){if(!state.settings.animations)return;const c=document.createElement('div');c.classNombre='confetti';for(let i=0;i<30;i++){const s=document.createElement('span');s.textContent=['⭐','🎉','✨','💎'][i%4];s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*.5+'s';c.appendHijo(s)}document.body.appendHijo(c);setHoraout(()=>c.remove(),2200)}
-  function modal(title,body,actions=''){document.getElementById('modalRoot').innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><div class="modal"><h2>${title}</h2>${body}<div class="modal-actions">${actions||'<button class="btn ghost" onclick="closeModal()">Close</button>'}</div></div></div>`}
-  window.closeModal=()=>document.getElementById('modalRoot').innerHTML='';
-
-  function render(){
-    const root=document.getElementById('app');
-    document.getElementById('globalToolbar').innerHTML=session.role?`<span class="badge">${session.role==='parent'?'🔐 Padres':'👤 Hijo'} Modo</span><button class="btn ghost small" onclick="logout()">Bloquear / Salir</button>`:'';
-    if(!state.settings.parentHash){renderSetup();return}
-    if(!session.role){renderHome();return}
-    if(session.role==='child')renderHijo();
-    else renderPadres();
-  }
-
-  function renderSetup(){
-    document.getElementById('app').innerHTML=`
-      <section class="hero">
-        <div class="hero-main"><h1>Creen hábitos. Crezcan juntos.</h1><p>Configura el registro privado de tareas y responsabilidades de tu familia. Los datos permanecen en este navegador.</p></div>
-        <div class="card">
-          <h2>Configuración para Padres</h2>
-          <div class="field"><label>Nombre de la familia</label><input id="setupFamily" value="Nuestra Familia"></div><br>
-          <div class="field"><label>Contraseña maestra o PIN</label><input id="setupPass" type="password" minlength="4"></div><br>
-          <div class="field"><label>Confirmar contraseña maestra</label><input id="setupPass2" type="password"></div><br>
-          <button class="btn primary" onclick="completeSetup()">Crear Aplicación Familiar</button>
-          <button class="btn ghost" onclick="loadDemo()">Cargar Familia de Demostración</button>
-        </div>
-      </section>`;
-  }
-
-  async function completeSetup(){
-    const p=document.getElementById('setupPass').value,p2=document.getElementById('setupPass2').value;
-    if(p.length<4||p!==p2)return toast('Las contraseñas deben coincidir y tener al menos 4 caracteres.');
-    state.settings.familyNombre=document.getElementById('setupFamily').value.trim()||'Nuestra Familia';
-    state.settings.parentHash=await hash(p);save();toast('Aplicación familiar creada');showAgregarHijo(true);render();
-  }
-  window.completeSetup=completeSetup;
-
-  async function loadDemo(){
-    state=defaults();state.settings.familyNombre='La Familia Aventurera';state.settings.parentHash=await hash('2468');state.demo=true;
-    const kids=[['Avery',10,'🧑‍🚀','111'],['Jordan',8,'⚽','222'],['Riley',6,'🦄','333'],['Casey',5,'🦖','444'],['Taylor',4,'🐻','555']];
-    for(const [name,age,avatar,pin] of kids)state.children.push({id:uid(),name,age,avatar,pinHash:await hash(pin),active:true,youngModo:age<=5});
-    createStarterAssignments();save();toast('Demostración cargada. Contraseña de padres: 2468');render();
-  }
-  window.loadDemo=loadDemo;
-
-  function renderHome(){
-    const dailyFamily=state.children.filter(c=>c.active).map(c=>percent(c.id,today()));
-    const fam=dailyFamily.length?Math.round(dailyFamily.reduce((a,b)=>a+b,0)/dailyFamily.length):0;
-    const quote=['Los pequeños pasos forman hábitos fuertes.','Ayudar en casa fortalece a toda la familia.','La responsabilidad es un superpoder.'][new Date().getDate()%3];
-    document.getElementById('app').innerHTML=`
-      <section class="hero">
-        <div class="hero-main"><h1>${escapeHtml(state.settings.familyNombre)} Centro Familiar</h1><p>${quote}</p>
-          <div class="grid cols-3" style="margin-top:24px">
-            <div class="metric"><span>Hoy</span><strong>${new Date().toLocaleDateString('es-US',{weekday:'long',month:'short',day:'numeric'})}</strong></div>
-            <div class="metric"><span>Progreso familiar</span><strong>${fam}%</strong><div class="progress"><span style="width:${fam}%"></span></div></div>
-            <div class="metric"><span>Meta familiar</span><strong>${state.familyGoal.target}%</strong><small>${escapeHtml(state.familyGoal.reward)}</small></div>
-          </div>
-        </div>
-        <div class="hero-side">
-          <button class="card" style="text-align:left" onclick="parentLogin()"><h2>🔐 Acceso de Padres</h2><p class="muted">Administra asignaciones, aprobaciones, reportes y configuración.</p></button>
-          <div class="card"><h3>Reto Semanal</h3><p>¡Completa tus responsabilidades y haz crecer el jardín familiar!</p></div>
-        </div>
-      </section>
-      <section class="card" style="margin-top:16px"><h2>Elige tu perfil</h2>
-        <div class="child-picker">${state.children.filter(c=>c.active).map(c=>`<button class="child-card" onclick="childLogin('${c.id}')"><div class="avatar">${c.avatar}</div><strong>${escapeHtml(c.name)}</strong><div class="muted">${weeklyPercent(c.id)}% esta semana</div></button>`).join('')||'<p>Todavía no hay niños agregados. Usa el acceso de padres para agregarlos.</p>'}</div>
-      </section>`;
-  }
-
-  function parentLogin(){
-    modal('Acceso de Padres',`<div class="field"><label>Contraseña maestra</label><input id="parentPass" type="password" autofocus onkeydown="if(event.key==='Enter')verifyPadres()"></div>`,
-      `<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="verifyPadres()">Desbloquear</button>`);
-  }
-  window.parentLogin=parentLogin;
-  async function verifyPadres(){const ok=await hash(document.getElementById('parentPass').value)===state.settings.parentHash;if(!ok)return toast('Contraseña incorrecta');closeModal();setSession('parent')}
-  window.verifyPadres=verifyPadres;
-
-  function childLogin(id){
-    const c=state.children.find(x=>x.id===id);
-    modal(`${c.avatar} ${escapeHtml(c.name)}`,`<div class="field"><label>Ingresa tu PIN de 3 dígitos</label><input id="childPin" type="password" inputmode="numeric" maxlength="3" autofocus onkeydown="if(event.key==='Enter')verifyHijo('${id}')"></div>`,
-      `<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="verifyHijo('${id}')">¡Comenzar!</button>`);
-  }
-  window.childLogin=childLogin;
-  async function verifyHijo(id){const c=state.children.find(x=>x.id===id);if(await hash(document.getElementById('childPin').value)!==c.pinHash)return toast('Intenta ingresar tu PIN nuevamente');closeModal();setSession('child',id)}
-  window.verifyHijo=verifyHijo;
-  window.logout=()=>setSession(null);
-
-  function renderHijo(){
-    const c=state.children.find(x=>x.id===session.childId);
-    const nav=`<div class="nav no-print">${[['child-today','Hoy'],['child-week','Mi Semana'],['child-awards','Premios'],['child-rewards','Tienda de Recompensas']].map(([v,l])=>`<button class="btn ${session.view===v?'active':''}" onclick="go('${v}')">${l}</button>`).join('')}</div>`;
-    if(session.view==='child-week')return childWeek(c,nav);
-    if(session.view==='child-awards')return childPremios(c,nav);
-    if(session.view==='child-rewards')return childRewards(c,nav);
-    childHoy(c,nav);
-  }
-  function childHoy(c,nav){
-    const tasks=activeAssignments(c.id,today()),p=percent(c.id,today()),wp=weeklyPercent(c.id),award=awardFor(p);
-    const completed=tasks.filter(a=>['complete','approved'].includes(getStatus(c.id,today(),a.id).status)).length;
-    const plants=['🌱','🌿','🌷','🌻','🌳','🦋'].slice(0,Math.min(6,Math.ceil(p/17)));
-    document.getElementById('app').innerHTML=`${nav}
-      <section class="grid cols-3">
-        <div class="card" style="display:grid;place-items:center;text-align:center"><div class="avatar">${c.avatar}</div><h2>${escapeHtml(c.name)}</h2><div class="ring" style="--p:${p}"><strong>${p}%</strong></div><p>${completed} of ${tasks.length} complete</p></div>
-        <div class="card"><h2>Premio de Hoy</h2><div class="award"><div class="award-icon">${award.icon}</div><div><strong>${award.name}</strong><div>${award.message}</div></div></div><br><h3>Progreso semanal</h3><div class="progress"><span style="width:${wp}%"></span></div><p>${wp}% esta semana</p><span class="badge">⭐ ${childPuntos(c.id)} puntos disponibles</span></div>
-        <div class="card"><h2>Jardín de Progreso</h2><div class="garden">${plants.map(x=>`<span class="plant">${x}</span>`).join('')||'<span class="muted">Completa una tarea para plantar tu primera semilla.</span>'}</div></div>
-      </section>
-      <section class="card" style="margin-top:16px"><h2>Responsabilidades de Hoy</h2>
-        <div class="task-list">${tasks.map(a=>taskHtml(c,a)).join('')||'<p class="muted">No hay responsabilidades programadas para hoy.</p>'}</div>
-      </section>
-      <section class="card" style="margin-top:16px"><h2>Camino de Aventura</h2><div class="path">${[['🏡',0],['🌳',25],['⛰️',50],['🏰',75],['💎',100]].map(([i,n])=>`<div class="path-stop ${p>=n?'active':''}">${i}</div>`).join('')}</div></section>`;
-  }
-  function taskHtml(c,a){
-    const s=getStatus(c.id,today(),a.id).status,done=['complete','approved'].includes(s),pending=s==='pending';
-    const label=done?'Completada':pending?'Esperando a los Padres':a.resp.verification?'Lista para Revisión':'Marcar como Completada';
-    return `<div class="task ${done?'done':''} ${pending?'pending':''}"><div class="task-icon">${a.resp.icon}</div><div class="task-main"><strong>${escapeHtml(a.resp.name)}</strong><div class="task-meta">${CATS[a.resp.category].label} • ${a.weight||a.resp.weight} punto(s) • ${a.resp.character}</div></div><button class="btn ${done?'success':pending?'warn':'primary'}" onclick="toggleTask('${a.id}')">${label}</button>${c.youngModo?`<button class="btn ghost small" onclick="speak('${escapeHtml(a.resp.name)}')">🔊</button>`:''}</div>`;
-  }
-  window.speak=t=>{const u=new SpeechSynthesisUtterance(t);u.lang='es-MX';speechSynthesis.speak(u)};
-  window.toggleTask=id=>{
-    const c=state.children.find(x=>x.id===session.childId),a=state.assignments.find(x=>x.id===id),r=state.responsibilities.find(x=>x.id===a.responsibilityId),s=getStatus(c.id,today(),id).status;
-    if(['complete','approved','pending'].includes(s)){if(!confirm('¿Cambiar esta tarea nuevamente a incompleta?'))return;setStatus(c.id,today(),id,'incomplete')}
-    else {setStatus(c.id,today(),id,r.verification?'pending':'complete');if(!r.verification)celebrate()}
-    render();
-  };
-  function childWeek(c,nav){
-    const ws=weekStart();document.getElementById('app').innerHTML=`${nav}<section class="card"><h2>${c.avatar} Mi Semana</h2><div class="week-grid">${Array.from({length:7},(_,i)=>{const d=dateAgregar(ws,i),p=percent(c.id,d),a=awardFor(p);return `<div class="day-cell"><strong>${new Date(d+'T12:00:00').toLocaleDateString('es-US',{weekday:'short'})}</strong><div style="font-size:2rem">${a.icon}</div><div>${p}%</div></div>`}).join('')}</div><br><div class="metric"><span>Weekly total</span><strong>${weeklyPercent(c.id)}%</strong></div></section>`;
-  }
-  function childPremios(c,nav){
-    const counts={};for(let i=0;i<7;i++){const a=awardFor(percent(c.id,dateAgregar(weekStart(),i)));counts[a.name]=(counts[a.name]||0)+1}
-    document.getElementById('app').innerHTML=`${nav}<section class="card"><h2>Mis Premios y Escudo de Carácter</h2><div class="grid cols-3">${Object.entries(counts).map(([n,v])=>`<div class="metric"><strong>${v}</strong><span>${n}</span></div>`).join('')}</div><br><div class="grid cols-3"><div class="award"><span class="award-icon">🤝</span><div><strong>Trabajo en equipo</strong><div>Ayudar en el hogar</div></div></div><div class="award"><span class="award-icon">🛡️</span><div><strong>Responsabilidad</strong><div>Cuidarte a ti mismo</div></div></div><div class="award"><span class="award-icon">🌱</span><div><strong>Crecimiento</strong><div>Buenos hábitos diarios</div></div></div></div></section>`;
-  }
-  function childRewards(c,nav){
-    const pts=childPuntos(c.id);document.getElementById('app').innerHTML=`${nav}<section class="card"><h2>Tienda de Recompensas</h2><p>Tienes <strong>${pts} puntos</strong>.</p><div class="grid cols-3">${state.rewards.map(r=>`<div class="card"><div style="font-size:2rem">${r.icon}</div><h3>${escapeHtml(r.name)}</h3><p>${r.cost} puntos</p><button class="btn primary" ${pts<r.cost?'disabled':''} onclick="redeem('${r.id}')">Solicitar Recompensa</button></div>`).join('')}</div></section>`;
-  }
-  window.redeem=id=>{const r=state.rewards.find(x=>x.id===id),pts=childPuntos(session.childId);if(pts<r.cost)return;state.redemptions.push({id:uid(),childId:session.childId,rewardId:id,cost:r.cost,status:'pending',date:new Date().toISOString()});save();toast('¡Recompensa solicitada!');render()};
-
-  function renderPadres(){
-    const nav=`<div class="nav no-print">${[['parent-dashboard','Resumen Familiar'],['parent-children','Hijos'],['parent-assignments','Asignaciones Semanales'],['parent-library','Biblioteca de Responsabilidades'],['parent-approvals','Aprobaciones'],['parent-history','Historial'],['parent-settings','Configuración y Respaldo']].map(([v,l])=>`<button class="btn ${session.view===v?'active':''}" onclick="go('${v}')">${l}</button>`).join('')}</div>`;
-    if(session.view==='parent-children')return parentHijos(nav);
-    if(session.view==='parent-assignments')return parentAssignments(nav);
-    if(session.view==='parent-library')return parentLibrary(nav);
-    if(session.view==='parent-approvals')return parentAprobaciones(nav);
-    if(session.view==='parent-history')return parentHistorial(nav);
-    if(session.view==='parent-settings')return parentSettings(nav);
-    parentResumen Familiar(nav);
-  }
-  window.go=v=>{session.view=v;render()};
-
-  function parentResumen Familiar(nav){
-    const kids=state.children.filter(c=>c.active);const fam=kids.length?Math.round(kids.reduce((s,c)=>s+percent(c.id,today()),0)/kids.length):0;
-    document.getElementById('app').innerHTML=`${nav}<section class="grid cols-4">
-      <div class="metric"><span>Familia Hoy</span><strong>${fam}%</strong></div>
-      <div class="metric"><span>Aprobaciones pendientes</span><strong>${pendingAprobaciones().length}</strong></div>
-      <div class="metric"><span>Semana actual</span><strong>${weekStart()}</strong></div>
-      <div class="metric"><span>Recompensa familiar</span><strong>${fam>=state.familyGoal.target?'¡Desbloqueada!':'En progreso'}</strong></div>
-    </section><section class="grid cols-3" style="margin-top:16px">${kids.map(c=>{const p=percent(c.id,today()),w=weeklyPercent(c.id),a=awardFor(p);return `<div class="card"><div style="display:flex;gap:12px;align-items:center"><div class="avatar">${c.avatar}</div><div><h3>${escapeHtml(c.name)}</h3><span class="badge">${a.icon} ${a.name}</span></div></div><br><div>Hoy ${p}%</div><div class="progress"><span style="width:${p}%"></span></div><br><div>Esta semana ${w}%</div><div class="progress"><span style="width:${w}%"></span></div></div>`}).join('')}</section>`;
-  }
-  function parentHijos(nav){
-    document.getElementById('app').innerHTML=`${nav}<section class="card"><div style="display:flex;justify-content:space-between;gap:8px"><h2>Hijos</h2><button class="btn primary" onclick="showAgregarHijo()">Agregar Hijo</button></div><div class="table-wrap"><table><thead><tr><th>Hijo</th><th>Edad</th><th>Modo</th><th>Acciones</th></tr></thead><tbody>${state.children.map(c=>`<tr><td>${c.avatar} ${escapeHtml(c.name)}</td><td>${c.age}</td><td>${c.youngModo?'Niño Pequeño':'Estándar'}</td><td><button class="btn small ghost" onclick="editHijo('${c.id}')">Editar</button> <button class="btn small warn" onclick="resetPin('${c.id}')">Restablecer PIN</button></td></tr>`).join('')}</tbody></table></div></section>`;
-  }
-  function showAgregarHijo(first=false){
-    if(state.children.length>=5)return toast('Se alcanzó el máximo de cinco niños.');
-    modal('Agregar Hijo',`<div class="form-grid"><div class="field"><label>Nombre</label><input id="cNombre"></div><div class="field"><label>Edad</label><input id="cEdad" type="number" min="3" max="18" value="7"></div><div class="field"><label>Emoji del avatar</label><input id="cAvatar" value="⭐"></div><div class="field"><label>PIN de 3 dígitos</label><input id="cPin" type="password" inputmode="numeric" maxlength="3"></div></div>`,
-      `<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveHijo()">Guardar Hijo</button>`);
-  }
-  window.showAgregarHijo=showAgregarHijo;
-  async function saveHijo(){
-    const name=document.getElementById('cNombre').value.trim(),age=+document.getElementById('cEdad').value,pin=document.getElementById('cPin').value;
-    if(!name||!/^\d{3}$/.test(pin))return toast('Ingresa un nombre y un PIN de 3 dígitos');
-    state.children.push({id:uid(),name,age,avatar:document.getElementById('cAvatar').value||'⭐',pinHash:await hash(pin),active:true,youngModo:age<=5});save();closeModal();toast('Hijo agregado');render();
-  }
-  window.saveHijo=saveHijo;
-  window.editHijo=id=>{const c=state.children.find(x=>x.id===id);modal('Editarar Hijo',`<div class="form-grid"><div class="field"><label>Nombre</label><input id="eNombre" value="${escapeHtml(c.name)}"></div><div class="field"><label>Edad</label><input id="eEdad" type="number" value="${c.age}"></div><div class="field"><label>Avatar</label><input id="eAvatar" value="${c.avatar}"></div><div class="field"><label>Activo</label><select id="eActivo"><option value="true" ${c.active?'selected':''}>Sí</option><option value="false" ${!c.active?'selected':''}>No</option></select></div></div>`,`<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveHijoEditar('${id}')">Guardar</button>`)}
-  window.saveHijoEditar=id=>{const c=state.children.find(x=>x.id===id);c.name=document.getElementById('eNombre').value.trim();c.age=+document.getElementById('eEdad').value;c.avatar=document.getElementById('eAvatar').value;c.active=document.getElementById('eActivo').value==='true';c.youngModo=c.age<=5;save();closeModal();render()}
-  window.resetPin=id=>modal('Restablecer PIN del Niño',`<div class="field"><label>Nuevo PIN de 3 dígitos</label><input id="newPin" type="password" maxlength="3" inputmode="numeric"></div>`,`<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveNuevoPin('${id}')">Guardar</button>`);
-  window.saveNuevoPin=async id=>{const p=document.getElementById('newPin').value;if(!/^\d{3}$/.test(p))return toast('El PIN debe tener 3 dígitos');state.children.find(x=>x.id===id).pinHash=await hash(p);save();closeModal();toast('PIN actualizado')}
-
-  function parentAssignments(nav){
-    const ws=weekStart();document.getElementById('app').innerHTML=`${nav}<section class="card"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><h2>Asignaciones Semanales</h2><p class="muted">Semana del ${ws}</p></div><div><button class="btn success" onclick="createStarterAssignments()">Crear Plan Inicial</button> <button class="btn warn" onclick="rotateChores()">Rotar Tareas del Hogar</button> <button class="btn primary" onclick="showAssignment()">Agregar Asignación</button></div></div><div class="table-wrap"><table><thead><tr><th>Hijo</th><th>Responsabilidad</th><th>Días</th><th>Puntos</th><th></th></tr></thead><tbody>${state.assignments.filter(a=>a.weekStart===ws).map(a=>{const c=state.children.find(x=>x.id===a.childId),r=state.responsibilities.find(x=>x.id===a.responsibilityId);return `<tr><td>${c?.avatar||''} ${escapeHtml(c?.name||'')}</td><td>${r?.icon||''} ${escapeHtml(r?.name||'')}</td><td>${(a.days||[]).map(d=>DAYS[d]).join(', ')}</td><td>${a.weight||r?.weight||1}</td><td><button class="btn danger small" onclick="deleteAssignment('${a.id}')">Eliminar</button></td></tr>`}).join('')}</tbody></table></div></section>`;
-  }
-  function createStarterAssignments(){
-    const ws=weekStart();state.assignments=state.assignments.filter(a=>a.weekStart!==ws);
-    const activeKids=state.children.filter(c=>c.active);
-    activeKids.forEach((c,idx)=>{
-      state.responsibilities.filter(r=>r.category!=='household'&&r.active).slice(0, rCount(c.age)).forEach(r=>state.assignments.push({id:uid(),weekStart:ws,childId:c.id,responsibilityId:r.id,days:[0,1,2,3,4,5,6],weight:r.weight,active:true}));
-      const household=state.responsibilities.filter(r=>r.category==='household'&&r.active);
-      [household[idx%household.length],household[(idx+5)%household.length]].forEach(r=>state.assignments.push({id:uid(),weekStart:ws,childId:c.id,responsibilityId:r.id,days:[1,3,5],weight:r.weight,active:true}));
-    });save();toast('Plan semanal inicial creado');render();
-  }
-  function rCount(age){return age<=5?4:age<=7?6:8}
-  window.createStarterAssignments=createStarterAssignments;
-  function rotateChores(){
-    const ws=weekStart(),kids=state.children.filter(c=>c.active),chores=state.assignments.filter(a=>a.weekStart===ws&&state.responsibilities.find(r=>r.id===a.responsibilityId)?.category==='household');
-    chores.forEach(a=>{const i=kids.findIndex(c=>c.id===a.childId);a.childId=kids[(i+1)%kids.length].id});save();toast('Tareas del hogar rotadas');render();
-  }
-  window.rotateChores=rotateChores;
-  function showAssignment(){
-    modal('Agregar Weekly Assignment',`<div class="form-grid"><div class="field"><label>Hijo</label><select id="aHijo">${state.children.filter(c=>c.active).map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Responsabilidad</label><select id="aResp">${state.responsibilities.filter(r=>r.active).map(r=>`<option value="${r.id}">${r.icon} ${escapeHtml(r.name)}</option>`).join('')}</select></div><div class="field"><label>Días</label><input id="aDías" value="0,1,2,3,4,5,6"><small>0=Domingo hasta 6=Sábado</small></div><div class="field"><label>Puntos</label><input id="aWeight" type="number" min="1" max="10" value="1"></div></div>`,`<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveAssignment()">Agregar</button>`);
-  }
-  window.showAssignment=showAssignment;
-  window.saveAssignment=()=>{const days=document.getElementById('aDías').value.split(',').map(Number).filter(n=>n>=0&&n<=6);state.assignments.push({id:uid(),weekStart:weekStart(),childId:document.getElementById('aHijo').value,responsibilityId:document.getElementById('aResp').value,days,weight:+document.getElementById('aWeight').value||1,active:true});save();closeModal();render()}
-  window.deleteAssignment=id=>{if(confirm('¿Eliminar esta asignación?')){state.assignments=state.assignments.filter(a=>a.id!==id);save();render()}}
-
-  function parentLibrary(nav){
-    document.getElementById('app').innerHTML=`${nav}<section class="card"><div style="display:flex;justify-content:space-between"><h2>Biblioteca de Responsabilidades</h2><button class="btn primary" onclick="showResponsabilidad()">Agregar Personalizada</button></div><div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Categoría</th><th>Dificultad</th><th>Verificación</th></tr></thead><tbody>${state.responsibilities.map(r=>`<tr><td>${r.icon} ${escapeHtml(r.name)}</td><td>${CATS[r.category].label}</td><td>${r.difficulty}</td><td><button class="btn small ${r.verification?'warn':'ghost'}" onclick="toggleVerificación('${r.id}')">${r.verification?'Requerida':'No requerida'}</button></td></tr>`).join('')}</tbody></table></div></section>`;
-  }
-  window.toggleVerificación=id=>{const r=state.responsibilities.find(x=>x.id===id);r.verification=!r.verification;save();render()}
-  window.showResponsabilidad=()=>modal('Agregar Responsabilidad',`<div class="form-grid"><div class="field"><label>Nombre</label><input id="rNombre"></div><div class="field"><label>Categoría</label><select id="rCat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}</select></div><div class="field"><label>Emoji</label><input id="rIcon" value="✅"></div><div class="field"><label>Dificultad</label><select id="rDiff"><option>fácil</option><option>media</option><option>difícil</option></select></div></div>`,`<button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveResponsabilidad()">Guardar</button>`);
-  window.saveResponsabilidad=()=>{const cat=document.getElementById('rCat').value;state.responsibilities.push({id:uid(),name:document.getElementById('rNombre').value.trim(),category:cat,icon:document.getElementById('rIcon').value||'✅',weight:1,difficulty:document.getElementById('rDiff').value,instructions:'',active:true,verification:false,character:characterFor(cat)});save();closeModal();render()}
-
-  function pendingAprobaciones(){
-    return Object.entries(state.completions).filter(([,v])=>v.status==='pending').map(([k,v])=>{const [childId,date,assignmentId]=k.split('|');return {key:k,childId,date,assignmentId,...v}})
-  }
-  function parentAprobaciones(nav){
-    const pend=pendingAprobaciones(),rewards=state.redemptions.filter(r=>r.status==='pending');
-    document.getElementById('app').innerHTML=`${nav}<section class="card"><h2>Cola de Aprobación de Padres</h2><div class="task-list">${pend.map(p=>{const c=state.children.find(x=>x.id===p.childId),a=state.assignments.find(x=>x.id===p.assignmentId),r=state.responsibilities.find(x=>x.id===a?.responsibilityId);return `<div class="task pending"><div class="task-icon">${r?.icon||'✅'}</div><div class="task-main"><strong>${escapeHtml(c?.name||'')} — ${escapeHtml(r?.name||'')}</strong><div class="task-meta">${p.date}</div></div><button class="btn success" onclick="approve('${p.key}')">Aprobar</button><button class="btn danger" onclick="reject('${p.key}')">Necesita Mejorar</button></div>`}).join('')||'<p>No hay tareas esperando aprobación.</p>'}</div><hr><h2>Solicitudes de Recompensas</h2>${rewards.map(x=>{const c=state.children.find(k=>k.id===x.childId),r=state.rewards.find(k=>k.id===x.rewardId);return `<div class="task"><div class="task-icon">${r.icon}</div><div class="task-main"><strong>${escapeHtml(c.name)} — ${escapeHtml(r.name)}</strong></div><button class="btn success" onclick="approveReward('${x.id}')">Aprobar</button></div>`}).join('')||'<p>No hay solicitudes de recompensas.</p>'}</section>`;
-  }
-  window.approve=key=>overrideStatus(key,'approved');
-  window.reject=key=>overrideStatus(key,'incomplete');
-  function overrideStatus(key,status){
-    const prev=state.completions[key]?.status||'incomplete';state.completions[key]={status,updatedAt:new Date().toISOString()};
-    state.overrides.push({id:uid(),key,previous:prev,next:status,at:new Date().toISOString()});save();toast('Registro actualizado');render();
-  }
-  window.approveReward=id=>{state.redemptions.find(r=>r.id===id).status='approved';save();toast('Recompensa aprobada');render()}
-
-  function parentHistorial(nav){
-    document.getElementById('app').innerHTML=`${nav}<section class="card"><div style="display:flex;justify-content:space-between"><h2>Reportes Semanales e Historial</h2><button class="btn primary no-print" onclick="window.print()">Imprimir / Guardar PDF</button></div>${state.children.filter(c=>c.active).map(c=>`<div class="card"><h3>${c.avatar} ${escapeHtml(c.name)}</h3><div class="grid cols-3"><div class="metric"><span>Cumplimiento semanal</span><strong>${weeklyPercent(c.id)}%</strong></div><div class="metric"><span>Premio semanal</span><strong>${awardFor(weeklyPercent(c.id)).icon}</strong>${awardFor(weeklyPercent(c.id)).name}</div><div class="metric"><span>Puntos disponibles</span><strong>${childPuntos(c.id)}</strong></div></div></div>`).join('')}<h3>Historial de Cambios de Padres</h3><div class="table-wrap"><table><thead><tr><th>Hora</th><th>Anterior</th><th>Nuevo</th></tr></thead><tbody>${state.overrides.slice().reverse().map(o=>`<tr><td>${new Date(o.at).toLocaleString('es-US')}</td><td>${statusLabel(o.previous)}</td><td>${statusLabel(o.next)}</td></tr>`).join('')}</tbody></table></div></section>`;
-  }
-
-  function parentSettings(nav){
-    document.getElementById('app').innerHTML=`${nav}<section class="grid cols-2"><div class="card"><h2>Configuración Familiar</h2><div class="field"><label>Nombre de la familia</label><input id="sFamily" value="${escapeHtml(state.settings.familyNombre)}"></div><br><div class="field"><label>La semana comienza el</label><select id="sWeek"><option value="sunday" ${state.settings.weekStartsOn==='sunday'?'selected':''}>Domingo</option><option value="monday" ${state.settings.weekStartsOn==='monday'?'selected':''}>Lunes</option></select></div><br><label><input id="sAnim" type="checkbox" ${state.settings.animations?'checked':''} style="width:auto"> Activar celebraciones</label><br><br><div class="field"><label>Porcentaje de la meta familiar</label><input id="sGoal" type="number" value="${state.familyGoal.target}"></div><br><div class="field"><label>Recompensa familiar</label><input id="sReward" value="${escapeHtml(state.familyGoal.reward)}"></div><br><button class="btn primary" onclick="saveSettings()">Guardar Configuración</button></div><div class="card"><h2>Respaldo de Datos</h2><p class="muted">Los registros se guardan únicamente en este navegador. Exporta un respaldo antes de cambiar de dispositivo.</p><button class="btn success" onclick="exportData()">Exportar Respaldo JSON</button><br><br><label class="btn ghost">Importar Respaldo<input type="file" accept=".json" onchange="importData(event)" hidden></label><br><br><button class="btn danger" onclick="resetData()">Restablecer Datos de la Aplicación</button></div></section>`;
-  }
-  window.saveSettings=()=>{state.settings.familyNombre=document.getElementById('sFamily').value.trim();state.settings.weekStartsOn=document.getElementById('sWeek').value;state.settings.animations=document.getElementById('sAnim').checked;state.familyGoal.target=+document.getElementById('sGoal').value;state.familyGoal.reward=document.getElementById('sReward').value;save();toast('Configuración guardada');render()}
-  window.exportData=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`family-quest-backup-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
-  window.importData=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.schemaVersion||!Array.isArray(x.children))throw 0;if(confirm('¿Reemplazar los datos actuales con este respaldo?')){state=x;save();toast('Respaldo importado');render()}}catch{toast('Archivo de respaldo no válido')}};r.readAsText(f)}
-  window.resetData=()=>{if(confirm('Esto eliminará permanentemente todos los datos familiares locales. ¿Deseas continuar?')){localStorage.removeItem(STORAGE_KEY);state=defaults();setSession(null)}}
-
-  render();
+(()=>{
+'use strict';
+const CLAVE='aventuraFamiliar.v1',DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],ZONA='America/Chicago',RETENCION_DIAS=365;
+const CATS={personal:{nombre:'Personal',icono:'🧼'},hogar:{nombre:'Home',icono:'🏠'},fortaleza:{nombre:'Strength',icono:'💪'}};
+const PREMIOS=[
+{min:100,nombre:'Campeón Diamante',icono:'💎',mensaje:'¡Esfuerzo perfecto hoy!'},
+{min:90,nombre:'Estrella de Oro',icono:'🌟',mensaje:'¡Trabajo increíble!'},
+{min:80,nombre:'Estrella de Plata',icono:'⭐',mensaje:'¡Firme y constante!'},
+{min:70,nombre:'Estrella de Bronce',icono:'🥉',mensaje:'¡Excelente progreso!'},
+{min:50,nombre:'Ayudante en Crecimiento',icono:'🌱',mensaje:'¡Estás creciendo!'},
+{min:0,nombre:'Sigue Creciendo',icono:'💪',mensaje:'¡Cada paso cuenta!'}];
+const BIBLIOTECA=[
+['Ordenar la sala','hogar','🛋️',1,'fácil'],['Recoger los juguetes','hogar','🧸',1,'fácil'],['Barrer el piso','hogar','🧹',2,'media'],['Recoger la mesa','hogar','🍽️',1,'fácil'],['Limpiar la mesa','hogar','🧽',2,'media'],['Poner los platos en el lavaplatos','hogar','🍽️',2,'media'],['Vaciar el lavaplatos','hogar','🫧',2,'media'],['Sacar la basura','hogar','🗑️',3,'difícil'],['Guardar los zapatos','hogar','👟',1,'fácil'],['Doblar las toallas','hogar','🧺',2,'media'],
+['Cepillarse los dientes por la mañana','personal','🪥',1,'fácil'],['Cepillarse los dientes antes de dormir','personal','🪥',1,'fácil'],['Bañarse o ducharse','personal','🚿',2,'media'],['Preparar la ropa para mañana','personal','👕',1,'fácil'],['Tender la cama','personal','🛏️',1,'fácil'],['Preparar la mochila escolar','personal','🎒',1,'fácil'],
+['Hacer ejercicio o jugar activamente','fortaleza','🏃',2,'media'],['Leer durante 20 minutos','fortaleza','📚',2,'media'],['Oración diaria','fortaleza','🙏',1,'fácil'],['Leer las Escrituras','fortaleza','📖',1,'fácil'],['Compartir algo por lo que estás agradecido','fortaleza','💛',1,'fácil'],['Ayudar a un familiar','fortaleza','🤝',2,'media']];
+let estado=cargar();
+if(!Array.isArray(estado.premios)||!estado.premios.length)estado.premios=PREMIOS.map(p=>({...p,id:id()}));
+estado.premios=estado.premios.map(p=>({...p,id:p.id||id()}));guardar();
+let sesion={rol:null,ninoId:null,vista:'inicio'},temporizador=null;
+function id(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
+function fechaCentral(fecha=new Date()){const p=new Intl.DateTimeFormat('en-CA',{timeZone:ZONA,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(fecha),v=Object.fromEntries(p.map(x=>[x.type,x.value]));return`${v.year}-${v.month}-${v.day}`}
+function hoy(){return fechaCentral()}
+function fechaUTC(f){return new Date(f+'T12:00:00Z')}
+function inicioSemana(fecha=hoy()){const f=typeof fecha==='string'?fecha:fechaCentral(fecha),d=fechaUTC(f),ini=estado.ajustes.iniciaSemana==='lunes'?1:0,dif=(d.getUTCDay()-ini+7)%7;d.setUTCDate(d.getUTCDate()-dif);return d.toISOString().slice(0,10)}
+function sumarFecha(f,n){const d=fechaUTC(f);d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
+function fechaHoraCentral(x=new Date()){return new Intl.DateTimeFormat('es-US',{timeZone:ZONA,dateStyle:'medium',timeStyle:'short'}).format(new Date(x))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function controlesDias(prefijo,seleccionados=[]){return`<div class="selector-dias"><label style="grid-column:1/-1">Días requeridos</label>${DIAS.map((d,i)=>`<label class="dia-check"><input type="checkbox" id="${prefijo}${i}" ${seleccionados.includes(i)?'checked':''}> ${d}</label>`).join('')}</div>`}
+function leerDias(prefijo){return DIAS.map((_,i)=>i).filter(i=>document.getElementById(prefijo+i)?.checked)}
+async function hash(t){const b=new TextEncoder().encode(t),r=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(r)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function valor(cat){return cat==='hogar'?'Trabajo en equipo':cat==='personal'?'Responsabilidad':'Fortaleza y crecimiento'}
+function base(){return{version:3,ajustes:{nombreFamilia:'Nuestra Familia',iniciaSemana:'domingo',animaciones:true,mostrarPuntos:true,parentHash:''},ninos:[],responsabilidades:BIBLIOTECA.map(([nombre,categoria,icono,peso,dificultad])=>({id:id(),nombre,categoria,icono,peso,dificultad,activo:true,verificacion:false,valor:valor(categoria),diasPredeterminados:categoria==='hogar'?[1,3,5]:[0,1,2,3,4,5,6]})),asignaciones:[],plantillaInicial:[],registros:{},premios:PREMIOS.map(p=>({...p,id:id()})),anulaciones:[],recompensas:[{id:id(),nombre:'Elegir la película familiar',costo:40,icono:'🎬'},{id:id(),nombre:'Elegir el postre',costo:30,icono:'🍨'},{id:id(),nombre:'Dormir 15 minutos más tarde',costo:50,icono:'🌙'}],canjes:[],metaFamiliar:{objetivo:90,recompensa:'Noche de película familiar'}}}
+function cargar(){try{const x=JSON.parse(localStorage.getItem(CLAVE))||base();x.plantillaInicial=x.plantillaInicial||[];x.anulaciones=x.anulaciones||[];x.responsabilidades=(x.responsabilidades||[]).map(r=>({...r,categoria:['practica','salud'].includes(r.categoria)?'fortaleza':r.categoria,diasPredeterminados:Array.isArray(r.diasPredeterminados)?r.diasPredeterminados:(r.categoria==='hogar'?[1,3,5]:[0,1,2,3,4,5,6])}));x.version=4;return x}catch{return base()}}function depurarHistorial(){const corte=sumarFecha(hoy(),-RETENCION_DIAS);Object.keys(estado.registros).forEach(k=>{const f=k.split('|')[1];if(f&&f<corte)delete estado.registros[k]});estado.anulaciones=(estado.anulaciones||[]).filter(a=>(a.fechaActividad||fechaCentral(new Date(a.fecha)))>=corte);estado.asignaciones=(estado.asignaciones||[]).filter(a=>a.inicioSemana>=sumarFecha(corte,-7))}function guardar(){depurarHistorial();localStorage.setItem(CLAVE,JSON.stringify(estado))}
+function cambiarSesion(rol,ninoId=null){sesion={rol,ninoId,vista:rol==='padre'?'panel-padre':rol==='nino'?'hoy-nino':'inicio'};renderizar();reiniciarBloqueo()}
+function reiniciarBloqueo(){clearTimeout(temporizador);if(sesion.rol==='padre')temporizador=setTimeout(()=>{aviso('El modo de padres se bloqueó por inactividad');cambiarSesion(null)},10*60*1000)}
+['click','keydown','touchstart'].forEach(e=>document.addEventListener(e,()=>sesion.rol==='padre'&&reiniciarBloqueo(),{passive:true}));
+function claveRegistro(n,f,a){return`${n}|${f}|${a}`}function estadoTarea(n,f,a){return estado.registros[claveRegistro(n,f,a)]||{estado:'incompleta'}}function ponerEstado(n,f,a,est){estado.registros[claveRegistro(n,f,a)]={estado:est,actualizado:new Date().toISOString()};guardar()}
+function tareasActivas(n,f){const dia=fechaUTC(f).getUTCDay();return estado.asignaciones.filter(a=>a.ninoId===n&&a.inicioSemana===inicioSemana(f)&&(a.dias||[]).includes(dia)).map(a=>({...a,resp:estado.responsabilidades.find(r=>r.id===a.responsabilidadId)})).filter(x=>x.resp)}
+function porcentaje(n,f){let den=0,num=0;tareasActivas(n,f).forEach(a=>{const s=estadoTarea(n,f,a.id).estado,w=a.peso||a.resp.peso||1;if(['justificada','no_aplica'].includes(s))return;den+=w;if(['completa','aprobada'].includes(s))num+=w});return den?Math.round(num/den*100):0}
+function porcentajeSemanal(n,ini=inicioSemana()){let den=0,num=0;for(let i=0;i<7;i++){const f=sumarFecha(ini,i);tareasActivas(n,f).forEach(a=>{const s=estadoTarea(n,f,a.id).estado,w=a.peso||a.resp.peso||1;if(['justificada','no_aplica'].includes(s))return;den+=w;if(['completa','aprobada'].includes(s))num+=w})}return den?Math.round(num/den*100):0}
+function premio(p){return [...estado.premios].sort((a,b)=>b.min-a.min).find(a=>p>=a.min)||{nombre:'Sin premio',icono:'✨',mensaje:'Sigue avanzando',min:0}}
+function puntos(n){let p=0;Object.entries(estado.registros).forEach(([k,v])=>{if(k.startsWith(n+'|')&&['completa','aprobada'].includes(v.estado)){const aid=k.split('|')[2],a=estado.asignaciones.find(x=>x.id===aid);p+=a?.peso||1}});return p-estado.canjes.filter(c=>c.ninoId===n).reduce((s,c)=>s+c.costo,0)}
+function aviso(m){const e=document.createElement('div');e.className='toast';e.textContent=m;document.getElementById('toastRoot').appendChild(e);setTimeout(()=>e.remove(),2400)}
+function celebrar(){if(!estado.ajustes.animaciones)return;const c=document.createElement('div');c.className='confeti';for(let i=0;i<28;i++){const s=document.createElement('span');s.textContent=['⭐','🎉','✨','💎'][i%4];s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*.5+'s';c.appendChild(s)}document.body.appendChild(c);setTimeout(()=>c.remove(),2200)}
+function modal(t,c,a=''){document.getElementById('modalRoot').innerHTML=`<div class="modal-fondo" onclick="if(event.target===this)cerrarModal()"><div class="modal"><h2>${t}</h2>${c}<div class="modal-acciones">${a||'<button class="boton neutro" onclick="cerrarModal()">Cerrar</button>'}</div></div></div>`}
+window.cerrarModal=()=>document.getElementById('modalRoot').innerHTML='';
+function renderizar(){document.getElementById('barra').innerHTML=sesion.rol?`<span class="etiqueta">${sesion.rol==='padre'?'🔐 Modo de padres':'👤 Modo infantil'}</span><button class="boton neutro peq" onclick="salir()">Bloquear / Salir</button>`:'';if(!estado.ajustes.parentHash)return configuracion();if(!sesion.rol)return inicio();if(sesion.rol==='nino')vistaNino();else vistaPadre()}
+function configuracion(){document.getElementById('app').innerHTML=`<section class="hero"><div class="hero-principal"><h1>Formemos hábitos. Crezcamos juntos.</h1><p>Configura un sistema familiar privado de tareas, responsabilidades y hábitos diarios.</p></div><div class="tarjeta"><h2>Configuración de padres</h2><div class="campo"><label>Nombre de la familia</label><input id="fam" value="Nuestra Familia"></div><br><div class="campo"><label>Contraseña maestra</label><input id="pass" type="password"></div><br><div class="campo"><label>Confirmar contraseña</label><input id="pass2" type="password"></div><br><button class="boton primario" onclick="completar()">Crear aplicación familiar</button> <button class="boton neutro" onclick="demo()">Cargar familia de demostración</button></div></section>`}
+window.completar=async()=>{const p=pass.value,p2=pass2.value;if(p.length<4||p!==p2)return aviso('Las contraseñas deben coincidir y tener al menos 4 caracteres.');estado.ajustes.nombreFamilia=fam.value.trim()||'Nuestra Familia';estado.ajustes.parentHash=await hash(p);guardar();aviso('Aplicación familiar creada');renderizar()}
+window.demo=async()=>{estado=base();estado.ajustes.nombreFamilia='La Familia Aventurera';estado.ajustes.parentHash=await hash('2468');for(const [nombre,edad,avatar,pin] of [['Alex',10,'🧑‍🚀','111'],['Dani',8,'⚽','222'],['Rafa',6,'🦄','333'],['Cami',5,'🦖','444'],['Tati',4,'🐻','555']])estado.ninos.push({id:id(),nombre,edad,avatar,pinHash:await hash(pin),activo:true,modoPequeno:edad<=5});crearPlan();guardar();aviso('Demostración: contraseña de padres 2468');renderizar()}
+function inicio(){const activos=estado.ninos.filter(n=>n.activo),prom=activos.length?Math.round(activos.reduce((s,n)=>s+porcentaje(n.id,hoy()),0)/activos.length):0;document.getElementById('app').innerHTML=`<section class="hero"><div class="hero-principal"><h1>Centro de Mando de ${esc(estado.ajustes.nombreFamilia)}</h1><p>Los pequeños pasos forman grandes hábitos.</p><div class="rejilla cols3"><div class="metrica"><span>Hoy (hora central)</span><strong>${fechaUTC(hoy()).toLocaleDateString('es-US',{timeZone:'UTC',weekday:'long',month:'short',day:'numeric'})}</strong></div><div class="metrica"><span>Progreso familiar</span><strong>${prom}%</strong><div class="progreso"><span style="width:${prom}%"></span></div></div><div class="metrica"><span>Meta familiar</span><strong>${estado.metaFamiliar.objetivo}%</strong><small>${esc(estado.metaFamiliar.recompensa)}</small></div></div></div><div class="hero-lado"><button class="tarjeta" onclick="loginPadre()"><h2>🔐 Ingreso de padres</h2><p class="suave">Administra tareas, aprobaciones e informes.</p></button><div class="tarjeta"><h3>Reto semanal</h3><p>¡Completa tus responsabilidades y haz crecer el jardín familiar!</p></div></div></section><section class="tarjeta" style="margin-top:16px"><h2>Elige tu perfil</h2><div class="selector-ninos">${activos.map(n=>`<button class="nino-card" onclick="loginNino('${n.id}')"><div class="avatar">${n.avatar}</div><strong>${esc(n.nombre)}</strong><div class="suave">${porcentajeSemanal(n.id)}% esta semana</div></button>`).join('')||'<p>Aún no hay niños. Ingresa como padre para agregarlos.</p>'}</div></section>`}
+window.loginPadre=()=>modal('Ingreso de padres',`<div class="campo"><label>Contraseña maestra</label><input id="pPadre" type="password" autofocus onkeydown="if(event.key==='Enter')verPadre()"></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="verPadre()">Desbloquear</button>`)
+window.verPadre=async()=>{if(await hash(pPadre.value)!==estado.ajustes.parentHash)return aviso('Contraseña incorrecta');cerrarModal();cambiarSesion('padre')}
+window.loginNino=nid=>{const n=estado.ninos.find(x=>x.id===nid);modal(`${n.avatar} ${esc(n.nombre)}`,`<div class="campo"><label>Ingresa tu PIN de 3 dígitos</label><input id="pNino" type="password" inputmode="numeric" maxlength="3" autofocus onkeydown="if(event.key==='Enter')verNino('${nid}')"></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="verNino('${nid}')">¡Vamos!</button>`)}
+window.verNino=async nid=>{const n=estado.ninos.find(x=>x.id===nid);if(await hash(pNino.value)!==n.pinHash)return aviso('Intenta nuevamente');cerrarModal();cambiarSesion('nino',nid)}
+window.salir=()=>cambiarSesion(null);window.ir=v=>{sesion.vista=v;renderizar()}
+function navNino(){return`<div class="nav no-print">${[['hoy-nino','Hoy'],['semana-nino','Mi semana'],['premios-nino','Mis premios'],['tienda-nino','Tienda de recompensas']].map(([v,l])=>`<button class="boton ${sesion.vista===v?'activo':''}" onclick="ir('${v}')">${l}</button>`).join('')}</div>`}
+function vistaNino(){const n=estado.ninos.find(x=>x.id===sesion.ninoId);if(sesion.vista==='semana-nino')return semanaNino(n);if(sesion.vista==='premios-nino')return premiosNino(n);if(sesion.vista==='tienda-nino')return tiendaNino(n);hoyNino(n)}
+function hoyNino(n){const tareas=tareasActivas(n.id,hoy()),p=porcentaje(n.id,hoy()),ps=porcentajeSemanal(n.id),pre=premio(p),hechas=tareas.filter(a=>['completa','aprobada'].includes(estadoTarea(n.id,hoy(),a.id).estado)).length,plantas=['🌱','🌿','🌷','🌻','🌳','🦋'].slice(0,Math.min(6,Math.ceil(p/17)));document.getElementById('app').innerHTML=`${navNino()}<section class="rejilla cols3"><div class="tarjeta" style="display:grid;place-items:center;text-align:center"><div class="avatar">${n.avatar}</div><h2>${esc(n.nombre)}</h2><div class="anillo" style="--p:${p}"><strong>${p}%</strong></div><p>${hechas} de ${tareas.length} completadas</p></div><div class="tarjeta"><h2>Premio de hoy</h2><div class="premio"><div class="premio-icono">${pre.icono}</div><div><strong>${pre.nombre}</strong><div>${pre.mensaje}</div></div></div><br><h3>Progreso semanal</h3><div class="progreso"><span style="width:${ps}%"></span></div><p>${ps}% esta semana</p><span class="etiqueta">⭐ ${puntos(n.id)} puntos disponibles</span></div><div class="tarjeta"><h2>Jardín de progreso</h2><div class="jardin">${plantas.map(x=>`<span class="planta">${x}</span>`).join('')||'<span class="suave">Completa una tarea para plantar tu primera semilla.</span>'}</div></div></section><section class="tarjeta" style="margin-top:16px"><h2>Responsabilidades de hoy</h2><div class="lista">${tareas.map(a=>htmlTarea(n,a)).join('')||'<p class="suave">No hay responsabilidades programadas hoy.</p>'}</div></section><section class="tarjeta" style="margin-top:16px"><h2>Camino de aventura</h2><div class="camino">${[['🏡',0],['🌳',25],['⛰️',50],['🏰',75],['💎',100]].map(([i,v])=>`<div class="parada ${p>=v?'activa':''}">${i}</div>`).join('')}</div></section>`}
+function htmlTarea(n,a){const s=estadoTarea(n.id,hoy(),a.id).estado,hecha=['completa','aprobada'].includes(s),pend=s==='pendiente',txt=hecha?'Completada':pend?'Esperando a un padre':a.resp.verificacion?'Lista para revisar':'Marcar completa';return`<div class="tarea ${hecha?'hecha':''} ${pend?'pendiente':''}"><div class="tarea-icono">${a.resp.icono}</div><div class="tarea-main"><strong>${esc(a.resp.nombre)}</strong><div class="meta">${CATS[a.resp.categoria].nombre} • ${a.peso||a.resp.peso} punto(s) • ${a.resp.valor}</div></div><button class="boton ${hecha?'bien':pend?'aviso':'primario'}" onclick="alternar('${a.id}')">${txt}</button>${n.modoPequeno?`<button class="boton neutro peq" onclick="hablar('${esc(a.resp.nombre)}')">🔊</button>`:''}</div>`}
+window.hablar=t=>speechSynthesis.speak(new SpeechSynthesisUtterance(t));window.alternar=aid=>{const n=estado.ninos.find(x=>x.id===sesion.ninoId),a=estado.asignaciones.find(x=>x.id===aid),r=estado.responsabilidades.find(x=>x.id===a.responsabilidadId),s=estadoTarea(n.id,hoy(),aid).estado;if(['completa','aprobada','pendiente'].includes(s)){if(!confirm('¿Deseas cambiarla a incompleta?'))return;ponerEstado(n.id,hoy(),aid,'incompleta')}else{ponerEstado(n.id,hoy(),aid,r.verificacion?'pendiente':'completa');if(!r.verificacion)celebrar()}renderizar()}
+function semanaNino(n){const ini=inicioSemana();document.getElementById('app').innerHTML=`${navNino()}<section class="tarjeta"><h2>${n.avatar} Mi semana</h2><div class="semana">${Array.from({length:7},(_,i)=>{const f=sumarFecha(ini,i),p=porcentaje(n.id,f),pr=premio(p);return`<div class="dia"><strong>${new Date(f+'T12:00:00').toLocaleDateString('es-US',{weekday:'short'})}</strong><div style="font-size:2rem">${pr.icono}</div><div>${p}%</div></div>`}).join('')}</div><br><div class="metrica"><span>Total semanal</span><strong>${porcentajeSemanal(n.id)}%</strong></div></section>`}
+function premiosNino(n){document.getElementById('app').innerHTML=`${navNino()}<section class="tarjeta"><h2>Mis premios y escudo de carácter</h2><div class="rejilla cols3"><div class="premio"><span class="premio-icono">🤝</span><div><strong>Trabajo en equipo</strong><div>Ayudar en el hogar</div></div></div><div class="premio"><span class="premio-icono">🛡️</span><div><strong>Responsabilidad</strong><div>Cuidar de ti mismo</div></div></div><div class="premio"><span class="premio-icono">🌱</span><div><strong>Crecimiento</strong><div>Prácticas diarias saludables</div></div></div></div></section>`}
+function tiendaNino(n){const p=puntos(n.id);document.getElementById('app').innerHTML=`${navNino()}<section class="tarjeta"><h2>Tienda de recompensas</h2><p>Tienes <strong>${p} puntos</strong>.</p><div class="rejilla cols3">${estado.recompensas.map(r=>`<div class="tarjeta"><div style="font-size:2rem">${r.icono}</div><h3>${esc(r.nombre)}</h3><p>${r.costo} puntos</p><button class="boton primario" ${p<r.costo?'disabled':''} onclick="canjear('${r.id}')">Solicitar recompensa</button></div>`).join('')}</div></section>`}
+window.canjear=rid=>{const r=estado.recompensas.find(x=>x.id===rid);if(puntos(sesion.ninoId)<r.costo)return;estado.canjes.push({id:id(),ninoId:sesion.ninoId,recompensaId:rid,costo:r.costo,estado:'pendiente',fecha:new Date().toISOString()});guardar();aviso('¡Recompensa solicitada!');renderizar()}
+function navPadre(){return`<div class="nav no-print">${[['panel-padre','Panel'],['ninos-padre','Niños'],['asignaciones-padre','Asignaciones semanales'],['biblioteca-padre','Biblioteca'],['aprobaciones-padre','Aprobaciones'],['correcciones-padre','Corregir actividades'],['historial-padre','Historial (1 año)'],['premios-padre','Premios'],['ajustes-padre','Ajustes y respaldo']].map(([v,l])=>`<button class="boton ${sesion.vista===v?'activo':''}" onclick="ir('${v}')">${l}</button>`).join('')}</div>`}
+function vistaPadre(){if(sesion.vista==='ninos-padre')return ninosPadre();if(sesion.vista==='asignaciones-padre')return asignacionesPadre();if(sesion.vista==='biblioteca-padre')return bibliotecaPadre();if(sesion.vista==='aprobaciones-padre')return aprobacionesPadre();if(sesion.vista==='correcciones-padre')return correccionesPadre();if(sesion.vista==='historial-padre')return historialPadre();if(sesion.vista==='premios-padre')return premiosPadre();if(sesion.vista==='ajustes-padre')return ajustesPadre();panelPadre()}
+function matrizHogarSemanal(){const ini=inicioSemana(),ns=estado.ninos.filter(n=>n.activo),asigs=estado.asignaciones.filter(a=>a.inicioSemana===ini&&estado.responsabilidades.find(r=>r.id===a.responsabilidadId)?.categoria==='hogar');const tareas=[...new Set(asigs.map(a=>a.responsabilidadId))].map(rid=>estado.responsabilidades.find(r=>r.id===rid)).filter(Boolean);if(!tareas.length)return'<p class="suave">No hay actividades del Hogar asignadas para esta semana.</p>';return`<div class="matriz-wrap"><table class="matriz-hogar"><thead><tr><th>Actividad del Hogar</th>${ns.map(n=>`<th>${n.avatar} ${esc(n.nombre)}</th>`).join('')}</tr></thead><tbody>${tareas.map(r=>`<tr><th>${r.icono} ${esc(r.nombre)}</th>${ns.map(n=>{const a=asigs.find(x=>x.responsabilidadId===r.id&&x.ninoId===n.id);return`<td class="${a?'asignada':''}">${a?(a.dias||[]).map(d=>DIAS[d]).join(', '):'—'}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`}
+function matrizResponsabilidades(){const ns=estado.ninos.filter(n=>n.activo),fecha=hoy(),porResp=new Map();ns.forEach(n=>tareasActivas(n.id,fecha).forEach(a=>porResp.set(a.responsabilidadId,a.resp)));const rs=[...porResp.values()];if(!rs.length)return'<p class="suave">No hay responsabilidades comunes programadas para hoy.</p>';return`<div class="matriz-wrap"><table class="matriz-hogar"><thead><tr><th>Responsabilidad</th>${ns.map(n=>`<th>${n.avatar} ${esc(n.nombre)}</th>`).join('')}</tr></thead><tbody>${rs.map(r=>`<tr><th>${r.icono} ${esc(r.nombre)}<div class="meta">${CATS[r.categoria]?.nombre||r.categoria}</div></th>${ns.map(n=>{const a=tareasActivas(n.id,fecha).find(x=>x.responsabilidadId===r.id);if(!a)return'<td>—</td>';const s=estadoTarea(n.id,fecha,a.id).estado,p=['completa','aprobada'].includes(s);return`<td class="${p?'asignada':''}">${p?'✓ Completa':s==='pendiente'?'⏳ Pendiente':'○ Incompleta'}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`}
+function panelPadre(){const ns=estado.ninos.filter(n=>n.activo),prom=ns.length?Math.round(ns.reduce((s,n)=>s+porcentaje(n.id,hoy()),0)/ns.length):0;document.getElementById('app').innerHTML=`${navPadre()}<section class="rejilla cols4"><div class="metrica"><span>Familia hoy</span><strong>${prom}%</strong><small>${fechaHoraCentral()}</small></div><div class="metrica"><span>Aprobaciones pendientes</span><strong>${pendientes().length}</strong></div><div class="metrica"><span>Semana actual</span><strong>${inicioSemana()}</strong></div><div class="metrica"><span>Recompensa familiar</span><strong>${prom>=estado.metaFamiliar.objetivo?'¡Desbloqueada!':'En progreso'}</strong></div></section><section class="rejilla cols3" style="margin-top:16px">${ns.map(n=>{const p=porcentaje(n.id,hoy()),s=porcentajeSemanal(n.id),pr=premio(p);return`<div class="tarjeta panel-nino"><div style="display:flex;gap:12px;align-items:center"><div class="avatar">${n.avatar}</div><div><h3>${esc(n.nombre)}</h3><span class="etiqueta">${pr.icono} ${pr.nombre}</span></div></div><br><div><strong>Hoy: ${p}%</strong></div><div class="progreso"><span style="width:${p}%"></span></div><br><div><strong>Esta semana: ${s}%</strong></div><div class="progreso"><span style="width:${s}%"></span></div></div>`}).join('')}</section><section class="tarjeta" style="margin-top:16px"><h2>Matriz de responsabilidades comunes — hoy</h2><p class="suave">Vista comparativa de cada niño y el estado de sus responsabilidades programadas.</p>${matrizResponsabilidades()}</section><section class="tarjeta" style="margin-top:16px"><h2>Matriz semanal de actividades del Hogar</h2><p style="color:#334155;font-weight:700">Cada actividad aparece como una asignación semanal por participante; los días indican cuándo debe realizarse.</p>${matrizHogarSemanal()}</section>`}
+function ninosPadre(){document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><div style="display:flex;justify-content:space-between"><h2>Niños</h2><button class="boton primario" onclick="agregarNino()">Agregar niño</button></div><div class="tabla"><table><thead><tr><th>Niño</th><th>Edad</th><th>Modo</th><th>Acciones</th></tr></thead><tbody>${estado.ninos.map(n=>`<tr><td>${n.avatar} ${esc(n.nombre)}</td><td>${n.edad}</td><td>${n.modoPequeno?'Niño pequeño':'Estándar'}</td><td><button class="boton peq neutro" onclick="editarNino('${n.id}')">Editar</button> <button class="boton peq aviso" onclick="reiniciarPin('${n.id}')">Cambiar PIN</button></td></tr>`).join('')}</tbody></table></div></section>`}
+window.agregarNino=()=>{if(estado.ninos.length>=5)return aviso('Se permite un máximo de cinco niños.');modal('Agregar niño',`<div class="form-grid"><div class="campo"><label>Nombre</label><input id="nNombre"></div><div class="campo"><label>Edad</label><input id="nEdad" type="number" min="3" max="18" value="7"></div><div class="campo"><label>Avatar</label><input id="nAvatar" value="⭐"></div><div class="campo"><label>PIN de 3 dígitos</label><input id="nPin" type="password" maxlength="3" inputmode="numeric"></div></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarNino()">Guardar</button>`)}
+window.guardarNino=async()=>{const nombre=nNombre.value.trim(),edad=+nEdad.value,pin=nPin.value;if(!nombre||!/^\d{3}$/.test(pin))return aviso('Escribe un nombre y un PIN de 3 dígitos.');estado.ninos.push({id:id(),nombre,edad,avatar:nAvatar.value||'⭐',pinHash:await hash(pin),activo:true,modoPequeno:edad<=5});guardar();cerrarModal();renderizar()}
+window.editarNino=nid=>{const n=estado.ninos.find(x=>x.id===nid);modal('Editar niño',`<div class="form-grid"><div class="campo"><label>Nombre</label><input id="eNombre" value="${esc(n.nombre)}"></div><div class="campo"><label>Edad</label><input id="eEdad" type="number" value="${n.edad}"></div><div class="campo"><label>Avatar</label><input id="eAvatar" value="${n.avatar}"></div><div class="campo"><label>Activo</label><select id="eActivo"><option value="true" ${n.activo?'selected':''}>Sí</option><option value="false" ${!n.activo?'selected':''}>No</option></select></div></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarEdicion('${nid}')">Guardar</button>`)}
+window.guardarEdicion=nid=>{const n=estado.ninos.find(x=>x.id===nid);n.nombre=eNombre.value.trim();n.edad=+eEdad.value;n.avatar=eAvatar.value;n.activo=eActivo.value==='true';n.modoPequeno=n.edad<=5;guardar();cerrarModal();renderizar()}
+window.reiniciarPin=nid=>modal('Cambiar PIN',`<div class="campo"><label>Nuevo PIN de 3 dígitos</label><input id="nuevoPin" type="password" maxlength="3" inputmode="numeric"></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarPin('${nid}')">Guardar</button>`)
+window.guardarPin=async nid=>{if(!/^\d{3}$/.test(nuevoPin.value))return aviso('El PIN debe tener 3 dígitos.');estado.ninos.find(x=>x.id===nid).pinHash=await hash(nuevoPin.value);guardar();cerrarModal();aviso('PIN actualizado')}
+function crearPlan(){const ini=inicioSemana();estado.asignaciones=estado.asignaciones.filter(a=>a.inicioSemana!==ini);if(estado.plantillaInicial.length){estado.plantillaInicial.forEach(t=>{if(estado.ninos.some(n=>n.id===t.ninoId&&n.activo)&&estado.responsabilidades.some(r=>r.id===t.responsabilidadId&&r.activo))estado.asignaciones.push({...t,id:id(),inicioSemana:ini,dias:[...(t.dias||[])]})});guardar();return}const ns=estado.ninos.filter(n=>n.activo),hogar=estado.responsabilidades.filter(r=>r.categoria==='hogar'&&r.activo);ns.forEach((n,i)=>{estado.responsabilidades.filter(r=>r.categoria!=='hogar'&&r.activo).slice(0,n.edad<=5?4:n.edad<=7?6:8).forEach(r=>estado.asignaciones.push({id:id(),inicioSemana:ini,ninoId:n.id,responsabilidadId:r.id,dias:[...(r.diasPredeterminados||[0,1,2,3,4,5,6])],peso:r.peso}));if(hogar.length)[hogar[i%hogar.length],hogar[(i+5)%hogar.length]].forEach(r=>estado.asignaciones.push({id:id(),inicioSemana:ini,ninoId:n.id,responsabilidadId:r.id,dias:[...(r.diasPredeterminados||[1,3,5])],peso:r.peso}))});guardar()}
+window.crearPlan=()=>{crearPlan();aviso(estado.plantillaInicial.length?'Plan inicial guardado aplicado':'Plan semanal creado');renderizar()}
+window.guardarPlantillaInicial=()=>{const actuales=estado.asignaciones.filter(a=>a.inicioSemana===inicioSemana());if(!actuales.length)return aviso('Primero agrega las asignaciones que deseas guardar.');if(!confirm('¿Guardar las asignaciones actuales como el nuevo plan inicial?'))return;estado.plantillaInicial=actuales.map(a=>({ninoId:a.ninoId,responsabilidadId:a.responsabilidadId,dias:[...(a.dias||[])],peso:a.peso||1}));guardar();aviso('Plan inicial actualizado y guardado');renderizar()}
+window.editarAsignacion=aid=>{const a=estado.asignaciones.find(x=>x.id===aid),r=estado.responsabilidades.find(x=>x.id===a.responsabilidadId);modal('Editar asignación',`<div class="form-grid"><div class="campo"><label>Niño</label><select id="eaNino">${estado.ninos.filter(n=>n.activo).map(n=>`<option value="${n.id}" ${n.id===a.ninoId?'selected':''}>${esc(n.nombre)}</option>`).join('')}</select></div><div class="campo"><label>Responsabilidad</label><select id="eaResp">${estado.responsabilidades.filter(x=>x.activo).map(x=>`<option value="${x.id}" ${x.id===a.responsabilidadId?'selected':''}>${x.icono} ${esc(x.nombre)}</option>`).join('')}</select></div><div class="campo"><label>Días requeridos</label><input id="eaDias" value="${(a.dias||[]).join(',')}"><small>0=Domingo hasta 6=Sábado</small></div><div class="campo"><label>Puntos</label><input id="eaPeso" type="number" min="1" max="10" value="${a.peso||r?.peso||1}"></div></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarEdicionAsignacion('${aid}')">Guardar</button>`)}
+window.guardarEdicionAsignacion=aid=>{const a=estado.asignaciones.find(x=>x.id===aid);a.ninoId=eaNino.value;a.responsabilidadId=eaResp.value;a.dias=eaDias.value.split(',').map(Number).filter(x=>x>=0&&x<=6);a.peso=+eaPeso.value||1;guardar();cerrarModal();aviso('Asignación actualizada');renderizar()}
+window.rotar=()=>{const ns=estado.ninos.filter(n=>n.activo),ini=inicioSemana();estado.asignaciones.filter(a=>a.inicioSemana===ini&&estado.responsabilidades.find(r=>r.id===a.responsabilidadId)?.categoria==='hogar').forEach(a=>{const i=ns.findIndex(n=>n.id===a.ninoId);a.ninoId=ns[(i+1)%ns.length].id});guardar();aviso('Tareas del hogar rotadas');renderizar()}
+function asignacionesPadre(){const ini=inicioSemana();document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><h2>Asignaciones semanales</h2><p class="suave">Semana del ${ini} • Plantilla guardada: ${estado.plantillaInicial.length?'Sí':'No'}</p></div><div><button class="boton bien" onclick="crearPlan()">Aplicar plan inicial</button> <button class="boton bien" onclick="guardarPlantillaInicial()">Guardar como plan inicial</button> <button class="boton aviso" onclick="rotar()">Rotar tareas del hogar</button> <button class="boton primario" onclick="agregarAsignacion()">Agregar asignación</button></div></div><div class="tabla"><table><thead><tr><th>Niño</th><th>Responsabilidad</th><th>Categoría</th><th>Días</th><th>Puntos</th><th></th></tr></thead><tbody>${estado.asignaciones.filter(a=>a.inicioSemana===ini).map(a=>{const n=estado.ninos.find(x=>x.id===a.ninoId),r=estado.responsabilidades.find(x=>x.id===a.responsabilidadId);return`<tr><td>${n?.avatar||''} ${esc(n?.nombre||'')}</td><td>${r?.icono||''} ${esc(r?.nombre||'')}</td><td>${r?CATS[r.categoria].nombre:''}</td><td>${(a.dias||[]).map(d=>DIAS[d]).join(', ')}</td><td>${a.peso||r?.peso||1}</td><td><button class="boton neutro peq" onclick="editarAsignacion('${a.id}')">Editar</button> <button class="boton peligro peq" onclick="borrarAsignacion('${a.id}')">Eliminar</button></td></tr>`}).join('')}</tbody></table></div></section>`}
+window.agregarAsignacion=()=>modal('Agregar asignación semanal',`<div class="form-grid"><div class="campo"><label>Niño</label><select id="aNino">${estado.ninos.filter(n=>n.activo).map(n=>`<option value="${n.id}">${esc(n.nombre)}</option>`).join('')}</select></div><div class="campo"><label>Responsabilidad</label><select id="aResp">${estado.responsabilidades.filter(r=>r.activo).map(r=>`<option value="${r.id}">${r.icono} ${esc(r.nombre)}</option>`).join('')}</select></div><div class="campo"><label>Días</label><input id="aDias" value="0,1,2,3,4,5,6"><button type="button" class="boton neutro peq" onclick="usarFrecuenciaBiblioteca()">Usar frecuencia de la biblioteca</button><small>0=Domingo hasta 6=Sábado</small></div><div class="campo"><label>Puntos</label><input id="aPeso" type="number" min="1" max="10" value="1"></div></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarAsignacion()">Agregar</button>`)
+window.usarFrecuenciaBiblioteca=()=>{const r=estado.responsabilidades.find(x=>x.id===aResp.value);aDias.value=(r?.diasPredeterminados||[]).join(',')}
+window.guardarAsignacion=()=>{estado.asignaciones.push({id:id(),inicioSemana:inicioSemana(),ninoId:aNino.value,responsabilidadId:aResp.value,dias:aDias.value.split(',').map(Number).filter(x=>x>=0&&x<=6),peso:+aPeso.value||1});guardar();cerrarModal();renderizar()}
+window.borrarAsignacion=aid=>{if(confirm('¿Eliminar esta asignación?')){estado.asignaciones=estado.asignaciones.filter(a=>a.id!==aid);guardar();renderizar()}}
+function bibliotecaPadre(){document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h2>Biblioteca de responsabilidades</h2><p style="color:#334155;font-weight:600">Edita cada elemento y selecciona sus días mediante casillas independientes.</p></div><button class="boton primario" onclick="nuevaResponsabilidad()">Agregar personalizada</button></div><div class="biblioteca-grid">${estado.responsabilidades.map(r=>`<article class="biblioteca-item"><h3>${r.icono} ${esc(r.nombre)}</h3><div class="biblioteca-datos"><span class="etiqueta">${CATS[r.categoria].nombre}</span><span class="etiqueta">${r.dificultad}</span><span class="etiqueta">${r.peso||1} punto(s)</span></div><div><strong>Días:</strong> ${(r.diasPredeterminados||[]).map(d=>DIAS[d]).join(', ')||'Sin días'}</div><div style="margin-top:12px"><button class="boton peq neutro" onclick="editarResponsabilidad('${r.id}')">Editar</button> <button class="boton peq ${r.verificacion?'aviso':'neutro'}" onclick="verificacion('${r.id}')">${r.verificacion?'Verificación requerida':'Sin verificación'}</button></div></article>`).join('')}</div></section>`}
+window.verificacion=rid=>{const r=estado.responsabilidades.find(x=>x.id===rid);r.verificacion=!r.verificacion;guardar();renderizar()}
+window.nuevaResponsabilidad=()=>modal('Agregar responsabilidad',`<div class="form-grid"><div class="campo"><label>Nombre</label><input id="rNombre"></div><div class="campo"><label>Categoría</label><select id="rCat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.nombre}</option>`).join('')}</select></div><div class="campo"><label>Emoji</label><input id="rIcono" value="✅"></div><div class="campo"><label>Dificultad</label><select id="rDif"><option>fácil</option><option>media</option><option>difícil</option></select></div><div class="campo"><label>Puntos</label><input id="rPeso" type="number" min="1" max="10" value="1"></div>${controlesDias('rDia',[0,1,2,3,4,5,6])}</div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarResponsabilidad()">Guardar</button>`)
+window.guardarResponsabilidad=()=>{const cat=rCat.value;estado.responsabilidades.push({id:id(),nombre:rNombre.value.trim(),categoria:cat,icono:rIcono.value||'✅',peso:+rPeso.value||1,dificultad:rDif.value,activo:true,verificacion:false,valor:valor(cat),diasPredeterminados:leerDias('rDia')});guardar();cerrarModal();renderizar()}
+window.editarResponsabilidad=rid=>{const r=estado.responsabilidades.find(x=>x.id===rid);modal('Editar responsabilidad',`<div class="form-grid"><div class="campo"><label>Nombre</label><input id="erNombre" value="${esc(r.nombre)}"></div><div class="campo"><label>Categoría</label><select id="erCat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}" ${k===r.categoria?'selected':''}>${v.nombre}</option>`).join('')}</select></div><div class="campo"><label>Emoji</label><input id="erIcono" value="${r.icono}"></div><div class="campo"><label>Dificultad</label><select id="erDif"><option ${r.dificultad==='fácil'?'selected':''}>fácil</option><option ${r.dificultad==='media'?'selected':''}>media</option><option ${r.dificultad==='difícil'?'selected':''}>difícil</option></select></div><div class="campo"><label>Puntos</label><input id="erPeso" type="number" min="1" max="10" value="${r.peso||1}"></div><div class="campo"><label>Estado</label><select id="erActivo"><option value="true" ${r.activo?'selected':''}>Activa</option><option value="false" ${!r.activo?'selected':''}>Inactiva</option></select></div>${controlesDias('erDia',r.diasPredeterminados||[])}</div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarEdicionResponsabilidad('${rid}')">Guardar cambios</button>`)}
+window.guardarEdicionResponsabilidad=rid=>{const r=estado.responsabilidades.find(x=>x.id===rid),cat=erCat.value;r.nombre=erNombre.value.trim();r.categoria=cat;r.icono=erIcono.value||'✅';r.dificultad=erDif.value;r.peso=+erPeso.value||1;r.diasPredeterminados=leerDias('erDia');r.activo=erActivo.value==='true';r.valor=valor(cat);guardar();cerrarModal();aviso('Responsabilidad actualizada');renderizar()}
+function correccionesPadre(){const ns=estado.ninos.filter(n=>n.activo),nid=sesion.correccionNino||ns[0]?.id,fecha=sesion.correccionFecha||hoy();sesion.correccionNino=nid;sesion.correccionFecha=fecha;const min=sumarFecha(hoy(),-RETENCION_DIAS),ts=nid?tareasActivas(nid,fecha):[];document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><h2>Corregir actividades</h2><p class="suave">El padre puede corregir cualquier actividad programada dentro del historial de un año. Cada cambio queda registrado.</p><div class="form-grid no-print"><div class="campo"><label>Niño</label><select onchange="cambiarCorreccion(this.value,null)">${ns.map(n=>`<option value="${n.id}" ${n.id===nid?'selected':''}>${esc(n.nombre)}</option>`).join('')}</select></div><div class="campo"><label>Fecha (hora central)</label><input type="date" min="${min}" max="${hoy()}" value="${fecha}" onchange="cambiarCorreccion(null,this.value)"></div></div><br><div class="lista">${ts.map(a=>{const s=estadoTarea(nid,fecha,a.id).estado;return`<div class="tarea ${['completa','aprobada'].includes(s)?'hecha':''}"><div class="tarea-icono">${a.resp.icono}</div><div class="tarea-main"><strong>${esc(a.resp.nombre)}</strong><div class="meta">${CATS[a.resp.categoria]?.nombre} • Estado actual: ${s}</div></div><select style="width:auto" onchange="corregirActividad('${nid}','${fecha}','${a.id}',this.value)">${[['incompleta','Incompleta'],['completa','Completa'],['pendiente','Pendiente'],['aprobada','Aprobada'],['justificada','Justificada'],['no_aplica','No aplica']].map(([v,l])=>`<option value="${v}" ${s===v?'selected':''}>${l}</option>`).join('')}</select></div>`}).join('')||'<p class="suave">No hay responsabilidades programadas para este niño en la fecha seleccionada.</p>'}</div></section>`}
+window.cambiarCorreccion=(nid,fecha)=>{if(nid)sesion.correccionNino=nid;if(fecha)sesion.correccionFecha=fecha;renderizar()}
+window.corregirActividad=(nid,fecha,aid,nuevo)=>{const k=claveRegistro(nid,fecha,aid),anterior=estadoTarea(nid,fecha,aid).estado;if(anterior===nuevo)return;estado.registros[k]={estado:nuevo,actualizado:new Date().toISOString(),modificadoPor:'padre'};estado.anulaciones.push({id:id(),clave:k,ninoId:nid,asignacionId:aid,fechaActividad:fecha,anterior,nuevo,fecha:new Date().toISOString()});guardar();aviso('Corrección guardada');renderizar()}
+function pendientes(){return Object.entries(estado.registros).filter(([,v])=>v.estado==='pendiente').map(([k,v])=>{const [ninoId,fecha,asignacionId]=k.split('|');return{clave:k,ninoId,fecha,asignacionId,...v}})}
+function aprobacionesPadre(){const ps=pendientes(),rs=estado.canjes.filter(c=>c.estado==='pendiente');document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><h2>Cola de aprobación</h2><div class="lista">${ps.map(p=>{const n=estado.ninos.find(x=>x.id===p.ninoId),a=estado.asignaciones.find(x=>x.id===p.asignacionId),r=estado.responsabilidades.find(x=>x.id===a?.responsabilidadId);return`<div class="tarea pendiente"><div class="tarea-icono">${r?.icono||'✅'}</div><div class="tarea-main"><strong>${esc(n?.nombre||'')} — ${esc(r?.nombre||'')}</strong><div class="meta">${p.fecha}</div></div><button class="boton bien" onclick="anular('${p.clave}','aprobada')">Aprobar</button><button class="boton peligro" onclick="anular('${p.clave}','incompleta')">Necesita mejorar</button></div>`}).join('')||'<p>No hay tareas esperando aprobación.</p>'}</div><hr><h2>Solicitudes de recompensas</h2>${rs.map(c=>{const n=estado.ninos.find(x=>x.id===c.ninoId),r=estado.recompensas.find(x=>x.id===c.recompensaId);return`<div class="tarea"><div class="tarea-icono">${r.icono}</div><div class="tarea-main"><strong>${esc(n.nombre)} — ${esc(r.nombre)}</strong></div><button class="boton bien" onclick="aprobarCanje('${c.id}')">Aprobar</button></div>`}).join('')||'<p>No hay solicitudes.</p>'}</section>`}
+window.anular=(k,nuevo)=>{const [ninoId,fechaActividad,asignacionId]=k.split('|'),anterior=estado.registros[k]?.estado||'incompleta';estado.registros[k]={estado:nuevo,actualizado:new Date().toISOString(),modificadoPor:'padre'};estado.anulaciones.push({id:id(),clave:k,ninoId,asignacionId,fechaActividad,anterior,nuevo,fecha:new Date().toISOString()});guardar();renderizar()}
+window.aprobarCanje=cid=>{estado.canjes.find(c=>c.id===cid).estado='aprobada';guardar();aviso('Recompensa aprobada');renderizar()}
+function historialPadre(){const ns=estado.ninos.filter(n=>n.activo),filtro=sesion.historialNino||'todos',cambios=(estado.anulaciones||[]).filter(a=>filtro==='todos'||a.ninoId===filtro).slice().reverse();document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h2>Informes e historial de 1 año</h2><p class="suave">Los registros usan la zona horaria central de EE. UU. y se conservan durante 365 días.</p></div><button class="boton primario no-print" onclick="window.print()">Imprimir / Guardar PDF</button></div><div class="campo no-print" style="max-width:320px"><label>Filtrar cambios por niño</label><select onchange="sesion.historialNino=this.value;renderizar()"><option value="todos">Todos</option>${ns.map(n=>`<option value="${n.id}" ${filtro===n.id?'selected':''}>${esc(n.nombre)}</option>`).join('')}</select></div><br>${ns.map(n=>`<div class="tarjeta"><h3>${n.avatar} ${esc(n.nombre)}</h3><div class="rejilla cols3"><div class="metrica"><span>Progreso semanal</span><strong>${porcentajeSemanal(n.id)}%</strong></div><div class="metrica"><span>Premio semanal</span><strong>${premio(porcentajeSemanal(n.id)).icono}</strong>${premio(porcentajeSemanal(n.id)).nombre}</div><div class="metrica"><span>Puntos disponibles</span><strong>${puntos(n.id)}</strong></div></div></div>`).join('')}<h3>Registro de cambios de padres</h3><div class="tabla"><table><thead><tr><th>Cambio (hora central)</th><th>Niño</th><th>Fecha de actividad</th><th>Responsabilidad</th><th>Anterior</th><th>Nuevo</th></tr></thead><tbody>${cambios.map(a=>{const partes=(a.clave||'').split('|'),nid=a.ninoId||partes[0],aid=a.asignacionId||partes[2],n=estado.ninos.find(x=>x.id===nid),as=estado.asignaciones.find(x=>x.id===aid),r=estado.responsabilidades.find(x=>x.id===as?.responsabilidadId);return`<tr><td>${fechaHoraCentral(a.fecha)}</td><td>${esc(n?.nombre||'—')}</td><td>${a.fechaActividad||partes[1]||'—'}</td><td>${r?.icono||''} ${esc(r?.nombre||'—')}</td><td>${a.anterior}</td><td>${a.nuevo}</td></tr>`}).join('')||'<tr><td colspan="6">No hay cambios registrados.</td></tr>'}</tbody></table></div></section>`}
+function premiosPadre(){
+  const ordenados=[...estado.premios].sort((a,b)=>b.min-a.min);
+  document.getElementById('app').innerHTML=`${navPadre()}<section class="tarjeta"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h2>Administración de premios</h2><p class="suave">Define los niveles de premios según el porcentaje mínimo alcanzado. El sistema usa el nivel más alto que corresponda.</p></div><button class="boton primario" onclick="nuevoPremio()">Agregar premio</button></div><div class="rejilla cols3" style="margin-top:16px">${ordenados.map(p=>`<article class="premio" style="align-items:flex-start"><div class="premio-icono">${esc(p.icono)}</div><div style="flex:1"><strong>${esc(p.nombre)}</strong><div class="meta">Desde ${p.min}%</div><p>${esc(p.mensaje)}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="boton neutro peq" onclick="editarPremio('${p.id}')">Editar</button><button class="boton peligro peq" onclick="eliminarPremio('${p.id}')">Eliminar</button></div></div></article>`).join('')}</div></section>`;
+}
+window.nuevoPremio=()=>modal('Agregar premio',`<div class="form-grid"><div class="campo"><label>Nombre del premio</label><input id="prNombre" placeholder="Ej. Súper Ayudante"></div><div class="campo"><label>Icono o emoji</label><input id="prIcono" value="🏆"></div><div class="campo"><label>Porcentaje mínimo</label><input id="prMin" type="number" min="0" max="100" value="80"></div><div class="campo"><label>Mensaje de motivación</label><input id="prMensaje" placeholder="¡Excelente trabajo!"></div></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarPremio()">Guardar</button>`);
+window.guardarPremio=()=>{
+  const nombre=prNombre.value.trim(),icono=prIcono.value.trim()||'🏆',min=Math.max(0,Math.min(100,+prMin.value)),mensaje=prMensaje.value.trim();
+  if(!nombre)return aviso('Escribe un nombre para el premio.');
+  if(estado.premios.some(p=>p.min===min))return aviso('Ya existe un premio con ese porcentaje mínimo.');
+  estado.premios.push({id:id(),nombre,icono,min,mensaje:mensaje||'¡Sigue avanzando!'});guardar();cerrarModal();aviso('Premio agregado');renderizar();
+};
+window.editarPremio=pid=>{const p=estado.premios.find(x=>x.id===pid);modal('Editar premio',`<div class="form-grid"><div class="campo"><label>Nombre del premio</label><input id="epNombre" value="${esc(p.nombre)}"></div><div class="campo"><label>Icono o emoji</label><input id="epIcono" value="${esc(p.icono)}"></div><div class="campo"><label>Porcentaje mínimo</label><input id="epMin" type="number" min="0" max="100" value="${p.min}"></div><div class="campo"><label>Mensaje de motivación</label><input id="epMensaje" value="${esc(p.mensaje)}"></div></div>`,`<button class="boton neutro" onclick="cerrarModal()">Cancelar</button><button class="boton primario" onclick="guardarEdicionPremio('${pid}')">Guardar cambios</button>`)};
+window.guardarEdicionPremio=pid=>{
+  const p=estado.premios.find(x=>x.id===pid),nombre=epNombre.value.trim(),min=Math.max(0,Math.min(100,+epMin.value));
+  if(!nombre)return aviso('Escribe un nombre para el premio.');
+  if(estado.premios.some(x=>x.id!==pid&&x.min===min))return aviso('Ya existe otro premio con ese porcentaje mínimo.');
+  p.nombre=nombre;p.icono=epIcono.value.trim()||'🏆';p.min=min;p.mensaje=epMensaje.value.trim()||'¡Sigue avanzando!';guardar();cerrarModal();aviso('Premio actualizado');renderizar();
+};
+window.eliminarPremio=pid=>{
+  if(estado.premios.length<=1)return aviso('Debe existir al menos un premio.');
+  const p=estado.premios.find(x=>x.id===pid);
+  if(!confirm(`¿Eliminar el premio "${p.nombre}"?`))return;
+  estado.premios=estado.premios.filter(x=>x.id!==pid);guardar();aviso('Premio eliminado');renderizar();
+};
+function ajustesPadre(){document.getElementById('app').innerHTML=`${navPadre()}<section class="rejilla cols2"><div class="tarjeta"><h2>Ajustes familiares</h2><div class="campo"><label>Nombre de la familia</label><input id="sFam" value="${esc(estado.ajustes.nombreFamilia)}"></div><br><div class="campo"><label>La semana comienza el</label><select id="sSemana"><option value="domingo" ${estado.ajustes.iniciaSemana==='domingo'?'selected':''}>Domingo</option><option value="lunes" ${estado.ajustes.iniciaSemana==='lunes'?'selected':''}>Lunes</option></select></div><br><label><input id="sAnim" type="checkbox" ${estado.ajustes.animaciones?'checked':''} style="width:auto"> Activar celebraciones</label><br><br><div class="campo"><label>Meta familiar (%)</label><input id="sMeta" type="number" value="${estado.metaFamiliar.objetivo}"></div><br><div class="campo"><label>Recompensa familiar</label><input id="sRec" value="${esc(estado.metaFamiliar.recompensa)}"></div><br><button class="boton primario" onclick="guardarAjustes()">Guardar ajustes</button></div><div class="tarjeta"><h2>Respaldo de datos</h2><p class="suave">Los datos se guardan solamente en este navegador. Exporta un respaldo antes de cambiar de dispositivo.</p><button class="boton bien" onclick="exportar()">Exportar respaldo JSON</button><br><br><label class="boton neutro">Importar respaldo<input type="file" accept=".json" onchange="importar(event)" hidden></label><br><br><button class="boton peligro" onclick="reiniciar()">Borrar todos los datos</button></div></section>`}
+window.guardarAjustes=()=>{estado.ajustes.nombreFamilia=sFam.value.trim();estado.ajustes.iniciaSemana=sSemana.value;estado.ajustes.animaciones=sAnim.checked;estado.metaFamiliar.objetivo=+sMeta.value;estado.metaFamiliar.recompensa=sRec.value;guardar();aviso('Ajustes guardados');renderizar()}
+window.exportar=()=>{const b=new Blob([JSON.stringify(estado,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`respaldo-aventura-familiar-${hoy()}.json`;a.click();URL.revokeObjectURL(a.href)}
+window.importar=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.version||!Array.isArray(x.ninos))throw 0;if(confirm('¿Reemplazar los datos actuales con este respaldo?')){estado=x;guardar();aviso('Respaldo importado');renderizar()}}catch{aviso('El archivo de respaldo no es válido')}};r.readAsText(f)}
+window.reiniciar=()=>{if(confirm('Esto borrará permanentemente todos los datos familiares guardados en este navegador. ¿Continuar?')){localStorage.removeItem(CLAVE);estado=base();cambiarSesion(null)}}
+renderizar();
 })();
 </script>
 </body>
